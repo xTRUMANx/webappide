@@ -1,0 +1,41 @@
+.clickable {
+    cursor: pointer;
+}
+
+#elementProperties {
+    min-height: 100px;
+    border-bottom: 1px solid black;
+}
+
+#elementsTree{
+    border-right: 1px solid black;
+}
+
+.tree{
+    list-style-type: none;
+}
+
+.slight-margin {
+    margin: 0 5px;
+}
+
+li.elementTreeNode {
+    border-left: 1px dotted black;
+}
+
+.elementTreeInfo>a.hoverOnly {
+    display: none;
+}
+
+.elementTreeInfo:hover>a.hoverOnly {
+    display: inline-block;
+}
+
+.elementIsSelected {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.disabled {
+    cursor: not-allowed;
+}
