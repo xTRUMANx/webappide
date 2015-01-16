@@ -1,13 +1,12 @@
 var React = require("react/addons"),
-  cx = React.addons.classSet;
-
-var elementsPropertiesSchema = require("./ElementsPropertiesSchema");
+  cx = React.addons.classSet,
+  Actions = require("./Actions");
 
 var ElementsProperties = React.createClass({
   updateElementProperty: function(propertyKey, element, e){
-    var value;
-
     var schema = this.props.elementsPropertiesSchema[element.type];
+
+    var value;
 
     if(schema[propertyKey].valueType === "checkbox"){
       value = e.target.checked;
@@ -24,94 +23,24 @@ var ElementsProperties = React.createClass({
       value = schema[propertyKey].max;
     }
 
-    element.properties[propertyKey] = value;
-
-    this.props.resetState();
+    Actions.updateElementProperty(element, propertyKey, value);
   },
   addAsChildElement: function(){
     var element = this.props.element;
 
     var newElementType = this.refs.newChildElementType.getDOMNode().value;
-    var newElement = { type: newElementType, nextChildId: 0, parent: element, children: [] };
 
-    newElement.id = element.id + "." + element.nextChildId++;
-
-    switch (newElementType){
-      case "heading":
-        newElement.properties = { type: "1" };
-        newElement.children.push({id: newElement.id + "." + newElement.nextChildId++, nextChildId: 0, type: "text", parent: newElement, properties: {type:"free", text: "New Heading"}});
-        break;
-      case "link":
-        newElement.properties = { type: "external", location: "#" };
-        newElement.children.push({id: newElement.id + "." + newElement.nextChildId++, nextChildId: 0, type: "text", parent: newElement, properties: {type:"free", text: "New Link"}});
-        break;
-      case "list":
-        var childElement;
-
-        if(newElement.parent.type !== "navbar") {
-          childElement = {id: newElement.id + "." + newElement.nextChildId++, nextChildId: 0, type: "text", parent: newElement, properties: {type: "free", text: "New List Item"}};
-        }
-        else{
-          childElement = {id: newElement.id + "." + newElement.nextChildId++, nextChildId: 0, type: "link", parent: newElement, properties: { type: "external", location: "#" }, children: [{type: "text", parent: newElement, properties: {type:"free", text: "New Link"}}]};
-        }
-
-        newElement.properties = { type: "unordered" };
-        newElement.children.push(childElement);
-        break;
-      case "text":
-        newElement.properties = { type: "free", text: "New Text" };
-        break;
-      case "navbar":
-        newElement.properties = { brand: "Brand" };
-        break;
-      case "grid":
-        newElement.properties = { columnsCount: 1 };
-        break;
-    }
-
-    newElement.parent = element;
-
-    element.children.push(newElement);
-
-    this.props.resetState();
+    Actions.addChildElement(newElementType, element);
   },
   addAsParentElement: function(){
     var element = this.props.element;
 
     var newElementType = this.refs.newChildElementType.getDOMNode().value;
-    var newElement = { id: element.parent.nextChildId++, nextChildId: 0, type: newElementType, parent: element.parent, children: [] };
 
-    switch (newElementType){
-      case "heading":
-        newElement.properties = { type: "1" };
-        break;
-      case "link":
-        newElement.properties = { type: "external", location: "#" };
-        break;
-      case "list":
-        newElement.properties = { type: "unordered" };
-        break;
-      case "text":
-        newElement.properties = { type: "free", text: "New Text" };
-        break;
-      case "navbar":
-        newElement.properties = { brand: "Brand" };
-        break;
-      case "grid":
-        newElement.properties = { columnsCount: 1 };
-        break;
-    }
-
-    // NOTE: Modifying a prop property directly. Don't think this works...
-    element.parent = newElement;
-    element.id = newElement.id + "." + newElement.nextChildId++;
-
-    newElement.children.push(element);
-
-    this.props.resetState();
+    Actions.addParentElement(newElementType, element);
   },
   deleteElement: function(){
-    this.props.deleteElement(this.props.element);
+    Actions.deleteElement(this.props.element);
   },
   render: function(){
     var element = this.props.element;
@@ -170,7 +99,7 @@ var ElementsProperties = React.createClass({
       );
     }.bind(this));
 
-    var elementsTypes = Object.keys(elementsPropertiesSchema).map(function(elementType, index){
+    var elementsTypes = Object.keys(this.props.elementsPropertiesSchema).map(function(elementType, index){
       if(elementType != "page") {
         return <option key={index}>{elementType}</option>
       }

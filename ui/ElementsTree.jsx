@@ -1,5 +1,6 @@
 var React = require("react/addons"),
-  cx = React.addons.classSet;
+  cx = React.addons.classSet,
+  Actions = require("./Actions");
 
 var ElementsTree = React.createClass({
   getInitialState: function(){
@@ -24,16 +25,16 @@ var ElementsTree = React.createClass({
     }
   },
   selectElement: function(element){
-    this.props.selectElementCb(element);
+    Actions.selectElement(element);
   },
   deleteElement: function(element){
-    this.props.deleteElement(element);
+    Actions.deleteElement(element);
   },
   moveUp: function(element){
-    this.props.moveUp(element);
+    Actions.moveUp(element);
   },
   moveDown: function(element){
-    this.props.moveDown(element);
+    Actions.moveDown(element);
   },
   render: function(){
     var element = this.props.tree,
@@ -47,7 +48,7 @@ var ElementsTree = React.createClass({
 
     if(this.state.showChildren){
       renderedChildElements = childElements.map(function(childElement, index){
-        return <ElementsTree tree={childElement} key={index} selectedElement={this.props.selectedElement} selectElementCb={this.props.selectElementCb} deleteElement={this.props.deleteElement} moveUp={this.props.moveUp} moveDown={this.props.moveDown} />
+        return <ElementsTree tree={childElement} key={index} selectedElement={this.props.selectedElement} />
       }.bind(this));
     }
 
