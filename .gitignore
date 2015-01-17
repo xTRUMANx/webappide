@@ -1,1 +1,4 @@
 public/js/bundle.js
+.idea/
+node_modules/
+ui-transformed/
