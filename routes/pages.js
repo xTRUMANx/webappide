@@ -12,6 +12,13 @@ router.get("/", function(req, res){
         res.json(page);
       });
   }
+  else if(req.query.layoutsPagesOnly){
+    DB.
+      getLayoutPages().
+      then(function(pages){
+        res.json(pages);
+      });
+  }
   else{
     DB.
       getPages().

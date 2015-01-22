@@ -12,7 +12,7 @@ module.exports = {
         deferred.reject(err);
       }
 
-      var sql = "select id, data from pages";
+      var sql = "select id, data from pages order by id";
 
       client.query(sql, function(err, result){
         if(err){
@@ -35,6 +35,38 @@ module.exports = {
 
     return deferred.promise;
   },
+  getLayoutPages: function(){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function (err, client, done) {
+      if(err){
+        deferred.reject(err);
+      }
+
+      var sql = "select id, data from pages where data ? 'contentElement'";
+
+      client.query(sql, function(err, result){
+        if(err){
+          deferred.reject(err);
+        }
+        else{
+          var pages = result.rows.map(function(row){
+            var page = row.data;
+            page.pageId = row.id;
+
+            return page;
+          });
+
+          console.log(result.rowCount)
+          deferred.resolve(pages);
+        }
+
+        done();
+      });
+    });
+
+    return deferred.promise;
+  },
   getPage: function(id){
     var deferred = Q.defer();
 
@@ -45,23 +77,47 @@ module.exports = {
 
       var sql = "select id, data from pages where id = $1";
 
-      client.query(sql, [id], function(err, result){
+      client.query(sql, [id], function(err, results){
         if(err){
           deferred.reject(err);
+
+          done();
         }
         else{
           var page;
 
-          if(result.rowCount) {
-            var row = result.rows[0];
+          if(results.rowCount) {
+            var row = results.rows[0];
             page = row.data;
             page.pageId = row.id;
           }
 
-          deferred.resolve(page);
-        }
+          if(page.properties.layout){
+            client.query("select id, data from pages where id = $1", [page.properties.layout], function(err2, results2){
+              if(err2){
+                deferred.reject(err2);
 
-        done();
+                done();
+              }
+              else{
+                var layoutPage;
+
+                if(results2.rowCount) {
+                  var row = results2.rows[0];
+                  layoutPage = row.data;
+                  layoutPage.pageId = row.id;
+                }
+
+                deferred.resolve({page: page, layoutPage: layoutPage});
+              }
+            });
+          }
+          else{
+            deferred.resolve({page: page});
+
+            done();
+          }
+        }
       });
     });
 

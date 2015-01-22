@@ -4,14 +4,25 @@ var Reflux = require("reflux"),
 
 var Store = Reflux.createStore({
   listenables: [Actions],
+  init: function(){
+    this.layoutPages = [];
+  },
   getInitialState: function(){
+    return this.emittedData();
+  },
+  emittedData: function(){
     return {
-      loading: false,
-      loaded: false,
-      err: null,
-      elementsTree: null,
-      selectedElement: null
+      loading: this.loading,
+      loaded: this.loaded,
+      err: this.err,
+      elementsTree: this.pages,
+      selectedElement: this.selectedElement,
+      layoutPages: this.layoutPages,
+      layoutPage: this.layoutPage
     };
+  },
+  emit: function(){
+    this.trigger(this.emittedData());
   },
   onNewPage: function(){
     var page = {
@@ -44,7 +55,11 @@ var Store = Reflux.createStore({
       if(res.statusCode === 200){
         this.loaded = true;
 
-        var page = JSON.parse(body);
+        var parsedResponse = JSON.parse(body);
+
+        this.layoutPage = setElementParent(parsedResponse.layoutPage);
+
+        var page = parsedResponse.page;
         page = setElementParent(page);
         this.pages = page;
         this.selectedElement = page;
@@ -59,17 +74,28 @@ var Store = Reflux.createStore({
       this.emit();
     }.bind(this));
   },
-  emittedData: function(){
-    return {
-      loading: this.loading,
-      loaded: this.loaded,
-      err: this.err,
-      elementsTree: this.pages,
-      selectedElement: this.selectedElement
-    };
-  },
-  emit: function(){
-    this.trigger(this.emittedData());
+  onLoadLayoutPages: function(){
+    Request("http://localhost:3000/api/pages?layoutsPagesOnly=true", function(err, res, body){
+      if(err){
+        return console.log(err);
+      }
+
+      if(res.statusCode === 200){
+        var layoutPages = JSON.parse(body);
+        layoutPages = setElementParent(layoutPages);
+        this.layoutPages = layoutPages.map(function(layoutPage){
+          return {
+            label: layoutPage.properties.title,
+            value: layoutPage.pageId
+          };
+        });
+      }
+      else{
+        this.err = err || res.statusCode;
+      }
+
+      this.emit();
+    }.bind(this));
   },
   onSave: function(cb){
     var page = JSON.stringify(this.pages, function(key, value){
@@ -133,6 +159,10 @@ var Store = Reflux.createStore({
       case "grid":
         newElement.properties = { columnsCount: 1 };
         break;
+      case "content":
+        newElement.properties = {};
+        this.pages.contentElement = newElement.id;
+        break;
     };
 
     newElement.parent = parentElement;
@@ -165,6 +195,9 @@ var Store = Reflux.createStore({
       case "grid":
         newElement.properties = { columnsCount: 1 };
         break;
+      case "content":
+        this.pages.contentElement = newElement.id;
+        break;
     }
 
     newElement.children.push(childElement);
@@ -183,6 +216,10 @@ var Store = Reflux.createStore({
     parent.children.splice(parent.children.indexOf(element), 1);
 
     this.selectedElement = parent;
+
+    if(element.type === "content"){
+      delete this.pages.contentElement;
+    }
 
     this.trigger({ elementsTree: this.pages, selectedElement: this.selectedElement });
   },

@@ -12,6 +12,10 @@ var elementsPropertiesSchema = {
   page: {
     title: {
       valueType: "text"
+    },
+    layout: {
+      valueType: "options",
+      values: "layoutPages"
     }
   },
   heading: {
@@ -79,7 +83,8 @@ var elementsPropertiesSchema = {
     }
   },
   jumbotron: {
-
+  },
+  content: {
   }
 };
 

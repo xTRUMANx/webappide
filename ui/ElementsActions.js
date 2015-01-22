@@ -9,6 +9,7 @@ var Actions = {
   moveUp: Reflux.createAction(),
   moveDown: Reflux.createAction(),
   load: Reflux.createAction(),
+  loadLayoutPages: Reflux.createAction(),
   newPage: Reflux.createAction(),
   save: Reflux.createAction()
 };

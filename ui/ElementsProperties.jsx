@@ -15,6 +15,10 @@ var ElementsProperties = React.createClass({
       value = e.target.value;
     }
 
+    if(element.type === "page" && propertyKey === "layout" && value){
+      value = Number(value);
+    }
+
     if(schema[propertyKey].valueType === "number" && schema[propertyKey].min !== undefined && Number(value) < schema[propertyKey].min){
       value = schema[propertyKey].min;
     }
@@ -29,6 +33,10 @@ var ElementsProperties = React.createClass({
     var element = this.props.element;
 
     var newElementType = this.refs.newChildElementType.getDOMNode().value;
+
+    if(newElementType === "content" && this.props.rootElement.contentElement){
+      return;
+    }
 
     ElementsActions.addChildElement(newElementType, element);
   },
@@ -67,9 +75,24 @@ var ElementsProperties = React.createClass({
 
       switch (schema[propertyKey].valueType){
         case "options":
-          var options = schema[propertyKey].values.map(function(value, index){
-            return <option key={index}>{value}</option>
-          });
+          var options;
+
+          if(typeof schema[propertyKey].values === "string"){
+            var propsKey = schema[propertyKey].values;
+
+            var optionValues = this.props[propsKey];
+
+            options = optionValues.map(function(optionValue, index){
+              return <option key={index + 1} value={optionValue.value}>{optionValue.label}</option>
+            });
+
+            options.unshift(<option key={0}></option>)
+          }
+          else{
+            options = schema[propertyKey].values.map(function(value, index){
+              return <option key={index}>{value}</option>
+            });
+          }
 
           input = (
             <select className="form-control" value={value} onChange={this.updateElementProperty.bind(this, propertyKey, element)}>
@@ -100,10 +123,10 @@ var ElementsProperties = React.createClass({
     }.bind(this));
 
     var elementsTypes = Object.keys(this.props.elementsPropertiesSchema).map(function(elementType, index){
-      if(elementType != "page") {
+      if(elementType != "page" && !(elementType === "content" && this.props.rootElement.contentElement)) {
         return <option key={index}>{elementType}</option>
       }
-    });
+    }.bind(this));
 
     var deleteButtonClasses = cx({
       clickable: true,

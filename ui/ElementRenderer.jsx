@@ -12,8 +12,8 @@ var ElementRenderer = React.createClass({
     var childElements = element.children || [];
 
     var renderedChildren = childElements.map(function(childElement, index){
-      return <ElementRenderer element={childElement} key={index} />;
-    });
+      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} />;
+    }.bind(this));
 
     switch (element.type){
       case "page":
@@ -22,6 +22,16 @@ var ElementRenderer = React.createClass({
             {renderedChildren}
           </div>
         );
+        break;
+      case "content":
+        if(this.props.pageBuilder){
+          renderedElement = (
+            <h1>Content Goes Here</h1>
+          );
+        }
+        else{
+          renderedElement = this.props.content
+        }
         break;
       case "heading":
         var headingClass = cx({
@@ -176,7 +186,14 @@ var ElementRenderer = React.createClass({
         );
     }
 
-    return renderedElement;
+    if(element.properties.layout){
+      return (
+        <ElementRenderer element={this.props.layoutPage} content={renderedElement} />
+      );
+    }
+    else{
+      return renderedElement;
+    }
   }
 });
 

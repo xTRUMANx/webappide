@@ -25,6 +25,8 @@ var PageBuilder = React.createClass({
     else{
       ElementsActions.newPage();
     }
+
+    ElementsActions.loadLayoutPages();
   },
   save: function(){
     this.setState({saveErr: null, saving: true, saved: false});
@@ -58,14 +60,14 @@ var PageBuilder = React.createClass({
           {this.state.saving ? <ProgressBar message="Saving" /> : null }
           {this.state.saveErr ? <p className="alert alert-danger">Failed to save data. Try again later. {this.state.err}</p> : null}
           <hr />
-          <ElementsProperties element={this.state.selectedElement} elementsPropertiesSchema={elementsPropertiesSchema} />
+          <ElementsProperties element={this.state.selectedElement} rootElement={this.state.elementsTree} layoutPages={this.state.layoutPages} elementsPropertiesSchema={elementsPropertiesSchema} />
         </div>
         <div id="elementsTree" className="col-xs-4">
           <h2>Elements Tree</h2>
           <ElementsTree tree={this.state.elementsTree} selectedElement={this.state.selectedElement} showChildren={true} />
         </div>
         <div className="col-xs-8">
-          <ElementRenderer element={this.state.elementsTree} />
+          <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} pageBuilder={true} />
         </div>
       </div>
     );

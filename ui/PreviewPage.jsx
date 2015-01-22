@@ -12,6 +12,8 @@ var PreviewPage = React.createClass({
     var pageId = this.getQuery().id;
 
     ElementsActions.load(pageId);
+
+    ElementsActions.loadLayoutPages();
   },
   render: function(){
     if(this.state.loading) {
@@ -30,7 +32,7 @@ var PreviewPage = React.createClass({
       <div>
         <h2 className="text-center">Previewed Page: {this.state.elementsTree.properties.title}</h2>
         <hr />
-        <ElementRenderer element={this.state.elementsTree} />
+        <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} />
       </div>
     );
   }
