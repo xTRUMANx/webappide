@@ -7,7 +7,10 @@ var Actions = {
   selectElement: Reflux.createAction(),
   updateElementProperty: Reflux.createAction(),
   moveUp: Reflux.createAction(),
-  moveDown: Reflux.createAction()
+  moveDown: Reflux.createAction(),
+  load: Reflux.createAction(),
+  newPage: Reflux.createAction(),
+  save: Reflux.createAction()
 };
 
 module.exports = Actions;

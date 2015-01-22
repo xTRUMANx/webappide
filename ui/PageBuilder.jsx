@@ -1,10 +1,10 @@
 var React = require("react/addons"),
+  ReactRouter = require("react-router"),
   Reflux = require("reflux"),
-  Actions = require("./Actions");
+  ElementsStore = require("./ElementsStore"),
+  ElementsActions = require("./ElementsActions");
 
 var elementsPropertiesSchema = require("./ElementsPropertiesSchema");
-
-var Store = require("./Store");
 
 var ElementsProperties = require("./ElementsProperties");
 
@@ -12,12 +12,52 @@ var ElementsTree = require("./ElementsTree");
 
 var ElementRenderer = require("./ElementRenderer");
 
+var ProgressBar = require("./ProgressBar");
+
 var PageBuilder = React.createClass({
-  mixins: [Reflux.connect(Store)],
+  mixins: [Reflux.connect(ElementsStore), ReactRouter.State],
+  componentDidMount: function(){
+    var pageId = this.getQuery().id;
+
+    if(pageId) {
+      ElementsActions.load(pageId);
+    }
+    else{
+      ElementsActions.newPage();
+    }
+  },
+  save: function(){
+    this.setState({saveErr: null, saving: true, saved: false});
+
+    ElementsActions.save(function(err){
+      if(err){
+        return this.setState({saveErr: err});
+      }
+      else{
+        this.setState({saved: true});
+      }
+
+      this.setState({saving: false});
+    }.bind(this));
+  },
   render: function(){
+    if(this.state.loading) {
+      return (
+        <ProgressBar message="Loading" />
+      );
+    }
+
+    if(this.state.err) {
+      return <p className="alert alert-danger">Failed to load data. Try refreshing. {this.state.err}</p>;
+    }
+
     return (
       <div className="row">
         <div id="elementProperties" className="col-xs-12">
+          <button className="btn btn-primary" type="button" disabled={this.state.saving} onClick={this.save}>Save</button>
+          {this.state.saving ? <ProgressBar message="Saving" /> : null }
+          {this.state.saveErr ? <p className="alert alert-danger">Failed to save data. Try again later. {this.state.err}</p> : null}
+          <hr />
           <ElementsProperties element={this.state.selectedElement} elementsPropertiesSchema={elementsPropertiesSchema} />
         </div>
         <div id="elementsTree" className="col-xs-4">

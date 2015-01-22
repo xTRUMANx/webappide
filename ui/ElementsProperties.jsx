@@ -1,6 +1,6 @@
 var React = require("react/addons"),
   cx = React.addons.classSet,
-  Actions = require("./Actions");
+  ElementsActions = require("./ElementsActions");
 
 var ElementsProperties = React.createClass({
   updateElementProperty: function(propertyKey, element, e){
@@ -23,24 +23,24 @@ var ElementsProperties = React.createClass({
       value = schema[propertyKey].max;
     }
 
-    Actions.updateElementProperty(element, propertyKey, value);
+    ElementsActions.updateElementProperty(element.id, propertyKey, value);
   },
   addAsChildElement: function(){
     var element = this.props.element;
 
     var newElementType = this.refs.newChildElementType.getDOMNode().value;
 
-    Actions.addChildElement(newElementType, element);
+    ElementsActions.addChildElement(newElementType, element);
   },
   addAsParentElement: function(){
     var element = this.props.element;
 
     var newElementType = this.refs.newChildElementType.getDOMNode().value;
 
-    Actions.addParentElement(newElementType, element);
+    ElementsActions.addParentElement(newElementType, element);
   },
   deleteElement: function(){
-    Actions.deleteElement(this.props.element);
+    ElementsActions.deleteElement(this.props.element);
   },
   render: function(){
     var element = this.props.element;

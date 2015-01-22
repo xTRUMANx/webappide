@@ -1,15 +1,25 @@
 var express = require("express"),
+  bodyParser = require("body-parser"),
+  morgan = require("morgan"),
   debug = require("debug"),
-  path = require("path");
+  path = require("path"),
+  apiRoutes = require("./routes/api");
 
 var app = express();
 
-var log = debug("react-web-buider");
-
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(bodyParser.json());
+
+app.use(morgan("dev"));
+
+app.use("/api", apiRoutes);
 
 app.set("port", process.env.PORT || 3000);
 
-var server = app.listen(app.get("port"), function(){
+var log = debug("react-web-buider");
+
+var server = app.listen(app.get("port"), function () {
   log("Server is running at port " + server.address().port);
 });
+

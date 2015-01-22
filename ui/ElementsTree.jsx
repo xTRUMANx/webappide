@@ -1,6 +1,6 @@
 var React = require("react/addons"),
   cx = React.addons.classSet,
-  Actions = require("./Actions");
+  ElementsActions = require("./ElementsActions");
 
 var ElementsTree = React.createClass({
   getInitialState: function(){
@@ -25,16 +25,16 @@ var ElementsTree = React.createClass({
     }
   },
   selectElement: function(element){
-    Actions.selectElement(element);
+    ElementsActions.selectElement(element);
   },
   deleteElement: function(element){
-    Actions.deleteElement(element);
+    ElementsActions.deleteElement(element);
   },
   moveUp: function(element){
-    Actions.moveUp(element);
+    ElementsActions.moveUp(element);
   },
   moveDown: function(element){
-    Actions.moveDown(element);
+    ElementsActions.moveDown(element);
   },
   render: function(){
     var element = this.props.tree,

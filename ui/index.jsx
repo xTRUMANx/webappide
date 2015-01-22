@@ -5,7 +5,8 @@ var React = require("react"),
   RouteHandler = ReactRouter.RouteHandler,
   Link = ReactRouter.Link;
 
-var PageBuilder = require("./PageBuilder");
+var PageBuilder = require("./PageBuilder"),
+  PreviewPage = require("./PreviewPage");
 
 var Pages = require("./Pages");
 
@@ -38,6 +39,7 @@ var routes = (
   <Route path="/" handler={App}>
     <DefaultRoute name="pages" path="" handler={Pages} />
     <Route name="pageBuilder" path="builder" handler={PageBuilder} />
+    <Route name="previewPage" path="preview" handler={PreviewPage} />
   </Route>
 );
 
