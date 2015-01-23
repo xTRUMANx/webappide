@@ -98,20 +98,20 @@ var ElementsProperties = React.createClass({
           }
 
           input = (
-            <select className="form-control" value={value} onChange={this.updateElementProperty.bind(this, propertyKey, element)}>
+            <select className="form-control" defaultValue={value} onChange={this.updateElementProperty.bind(this, propertyKey, element)}>
               {options}
             </select>
           );
           break;
         case "number":
-          input = <input className="form-control" type="number" value={value || schema[propertyKey].defaultValue} min={schema[propertyKey].min} max={schema[propertyKey].max} onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
+          input = <input className="form-control" type="number" defaultValue={value || schema[propertyKey].defaultValue} min={schema[propertyKey].min} max={schema[propertyKey].max} onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
           break;
         case "checkbox":
-          input = <input className="checkbox" value={value} type="checkbox" onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
+          input = <input className="checkbox" defaultValue={value} type="checkbox" onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
           break;
         case "text":
         default:
-          input = <input className="form-control" value={value} onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
+          input = <input className="form-control" defaultValue={value} onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
           break;
       }
 

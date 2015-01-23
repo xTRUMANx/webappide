@@ -190,7 +190,7 @@ var Store = Reflux.createStore({
         newElement.properties = {};
         this.page.contentElement = newElement.id;
         break;
-    };
+    }
 
     newElement.parent = parentElement;
 
@@ -198,7 +198,7 @@ var Store = Reflux.createStore({
 
     this.selectedElement = newElement;
 
-    this.trigger({ elementsTree: this.page, selectedElement: this.selectedElement });
+    this.emit();
   },
   onAddParentElement: function(newElementType, childElement){
     var newElement = { id: childElement.id, nextChildId: 0, type: newElementType, parent: childElement.parent, children: [] };
@@ -235,7 +235,7 @@ var Store = Reflux.createStore({
 
     newElement.parent.children.splice(index, 1, newElement);
 
-    this.trigger({ elementsTree: this.page, selectedElement: newElement });
+    this.emit();
   },
   onDeleteElement: function(element){
     var parent = element.parent;
@@ -248,19 +248,19 @@ var Store = Reflux.createStore({
       delete this.page.contentElement;
     }
 
-    this.trigger({ elementsTree: this.page, selectedElement: this.selectedElement });
+    this.emit();
   },
   onSelectElement: function(element){
     this.selectedElement = element;
 
-    this.trigger({ selectedElement: this.selectedElement });
+    this.emit();
   },
   onUpdateElementProperty: function(elementId, propertyKey, value){
     var element = findElementById(elementId, this.page);
 
     element.properties[propertyKey] = value;
 
-    this.trigger({ elementsTree: this.page });
+    this.emit();
   },
   onMoveUp: function(element){
     var parent = element.parent;
@@ -275,7 +275,7 @@ var Store = Reflux.createStore({
 
     parent.children.splice(elementIndex - 1, 0, element);
 
-    this.trigger({ elementsTree: this.page });
+    this.emit();
   },
   onMoveDown: function(element){
     var parent = element.parent;
@@ -290,7 +290,7 @@ var Store = Reflux.createStore({
 
     parent.children.splice(elementIndex + 1, 0, element);
 
-    this.trigger({ elementsTree: this.page });
+    this.emit();
   }
 });
 
