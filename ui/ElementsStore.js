@@ -15,8 +15,9 @@ var Store = Reflux.createStore({
       loading: this.loading,
       loaded: this.loaded,
       err: this.err,
-      elementsTree: this.pages,
+      elementsTree: this.page,
       selectedElement: this.selectedElement,
+      pages: this.pages,
       layoutPages: this.layoutPages,
       layoutPage: this.layoutPage
     };
@@ -35,7 +36,7 @@ var Store = Reflux.createStore({
       children: []
     };
 
-    this.pages = page;
+    this.page = page;
     this.selectedElement = page;
 
     this.emit();
@@ -57,11 +58,13 @@ var Store = Reflux.createStore({
 
         var parsedResponse = JSON.parse(body);
 
-        this.layoutPage = setElementParent(parsedResponse.layoutPage);
+        if(parsedResponse.layoutPage) {
+          this.layoutPage = setElementParent(parsedResponse.layoutPage);
+        }
 
         var page = parsedResponse.page;
         page = setElementParent(page);
-        this.pages = page;
+        this.page = page;
         this.selectedElement = page;
       }
       else{
@@ -97,8 +100,31 @@ var Store = Reflux.createStore({
       this.emit();
     }.bind(this));
   },
+  onLoadPages: function(){
+    Request("http://localhost:3000/api/pages", function(err, res, body){
+      if(err){
+        return console.log(err);
+      }
+
+      if(res.statusCode === 200){
+        var pages = JSON.parse(body);
+        pages = setElementParent(pages);
+        this.pages = pages.map(function(page){
+          return {
+            label: page.properties.title,
+            value: page.pageId
+          };
+        });
+      }
+      else{
+        this.err = err || res.statusCode;
+      }
+
+      this.emit();
+    }.bind(this));
+  },
   onSave: function(cb){
-    var page = JSON.stringify(this.pages, function(key, value){
+    var page = JSON.stringify(this.page, function(key, value){
       if(key === "parent" && value){
         return value.id;
       }
@@ -115,8 +141,8 @@ var Store = Reflux.createStore({
       },
       body: page
     }, function(err, res, body){
-      if(!this.pages.pageId){
-        this.pages.pageId = JSON.parse(body).pageId;
+      if(!this.page.pageId){
+        this.page.pageId = JSON.parse(body).pageId;
 
         this.emit();
       }
@@ -144,7 +170,8 @@ var Store = Reflux.createStore({
           childElement = {id: newElement.id + "." + newElement.nextChildId++, nextChildId: 0, type: "text", parent: newElement, properties: {type: "free", text: "New List Item"}};
         }
         else{
-          childElement = {id: newElement.id + "." + newElement.nextChildId++, nextChildId: 0, type: "link", parent: newElement, properties: { type: "external", location: "#" }, children: [{type: "text", parent: newElement, properties: {type:"free", text: "New Link"}}]};
+          childElement = {id: newElement.id + "." + newElement.nextChildId++, nextChildId: 0, type: "link", parent: newElement, properties: { type: "external", location: "#" }, children: []};
+          childElement.children.push({id: childElement.id + "." + childElement.nextChildId++, nextChildId: 0, type: "text", parent: newElement, properties: {type:"free", text: "New Link"}});
         }
 
         newElement.properties = { type: "unordered" };
@@ -161,7 +188,7 @@ var Store = Reflux.createStore({
         break;
       case "content":
         newElement.properties = {};
-        this.pages.contentElement = newElement.id;
+        this.page.contentElement = newElement.id;
         break;
     };
 
@@ -171,7 +198,7 @@ var Store = Reflux.createStore({
 
     this.selectedElement = newElement;
 
-    this.trigger({ elementsTree: this.pages, selectedElement: this.selectedElement });
+    this.trigger({ elementsTree: this.page, selectedElement: this.selectedElement });
   },
   onAddParentElement: function(newElementType, childElement){
     var newElement = { id: childElement.id, nextChildId: 0, type: newElementType, parent: childElement.parent, children: [] };
@@ -196,7 +223,7 @@ var Store = Reflux.createStore({
         newElement.properties = { columnsCount: 1 };
         break;
       case "content":
-        this.pages.contentElement = newElement.id;
+        this.page.contentElement = newElement.id;
         break;
     }
 
@@ -208,7 +235,7 @@ var Store = Reflux.createStore({
 
     newElement.parent.children.splice(index, 1, newElement);
 
-    this.trigger({ elementsTree: this.pages, selectedElement: newElement });
+    this.trigger({ elementsTree: this.page, selectedElement: newElement });
   },
   onDeleteElement: function(element){
     var parent = element.parent;
@@ -218,10 +245,10 @@ var Store = Reflux.createStore({
     this.selectedElement = parent;
 
     if(element.type === "content"){
-      delete this.pages.contentElement;
+      delete this.page.contentElement;
     }
 
-    this.trigger({ elementsTree: this.pages, selectedElement: this.selectedElement });
+    this.trigger({ elementsTree: this.page, selectedElement: this.selectedElement });
   },
   onSelectElement: function(element){
     this.selectedElement = element;
@@ -229,11 +256,11 @@ var Store = Reflux.createStore({
     this.trigger({ selectedElement: this.selectedElement });
   },
   onUpdateElementProperty: function(elementId, propertyKey, value){
-    var element = findElementById(elementId, this.pages);
+    var element = findElementById(elementId, this.page);
 
     element.properties[propertyKey] = value;
 
-    this.trigger({ elementsTree: this.pages });
+    this.trigger({ elementsTree: this.page });
   },
   onMoveUp: function(element){
     var parent = element.parent;
@@ -248,7 +275,7 @@ var Store = Reflux.createStore({
 
     parent.children.splice(elementIndex - 1, 0, element);
 
-    this.trigger({ elementsTree: this.pages });
+    this.trigger({ elementsTree: this.page });
   },
   onMoveDown: function(element){
     var parent = element.parent;
@@ -263,7 +290,7 @@ var Store = Reflux.createStore({
 
     parent.children.splice(elementIndex + 1, 0, element);
 
-    this.trigger({ elementsTree: this.pages });
+    this.trigger({ elementsTree: this.page });
   }
 });
 

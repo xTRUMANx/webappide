@@ -33,7 +33,19 @@ var elementsPropertiesSchema = {
       values: ["internal", "external"]
     },
     location: {
-      valueType: "text"
+      valueType: "text",
+      ifSiblingEquals: {
+        sibling: "type",
+        value: "external"
+      }
+    },
+    page: {
+      valueType: "options",
+      values: "pages",
+      ifSiblingEquals: {
+        sibling: "type",
+        value: "internal"
+      }
     }
   },
   list: {

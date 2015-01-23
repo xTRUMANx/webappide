@@ -57,7 +57,6 @@ module.exports = {
             return page;
           });
 
-          console.log(result.rowCount)
           deferred.resolve(pages);
         }
 
@@ -109,6 +108,8 @@ module.exports = {
                 }
 
                 deferred.resolve({page: page, layoutPage: layoutPage});
+
+                done();
               }
             });
           }

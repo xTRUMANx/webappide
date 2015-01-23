@@ -60,10 +60,13 @@ var ElementsProperties = React.createClass({
     var schema = this.props.elementsPropertiesSchema[element.type];
 
     var propertyKeys = Object.keys(schema).filter(function(key){
-      return !schema[key].ifChildOf ||
-        schema[key].ifChildOf.filter(function(parent){
-          return element.parent && element.parent.type === parent;
-        }).length > 0;
+      var prop = schema[key];
+
+      return (!prop.ifSiblingEquals || element.properties[prop.ifSiblingEquals.sibling] === prop.ifSiblingEquals.value ) &&
+        (!schema[key].ifChildOf ||
+          schema[key].ifChildOf.filter(function(parent){
+            return element.parent && element.parent.type === parent;
+          }).length > 0);
     });
 
     var propertiesTypes = propertyKeys.map(function(propertyKey, i){

@@ -1,7 +1,13 @@
 var React = require("react/addons"),
-  cx = React.addons.classSet;
+  cx = React.addons.classSet,
+  ReactRouter = require("react-router"),
+  Link = ReactRouter.Link;
 
 var ElementRenderer = React.createClass({
+  mixins: [ReactRouter.Navigation],
+  transitionToPath: function(path){
+    this.transitionTo(path);
+  },
   render: function(){
     var element = this.props.element;
 
@@ -43,9 +49,20 @@ var ElementRenderer = React.createClass({
         );
         break;
       case "link":
-        renderedElement = (
-          <a href={element.properties.location}>{renderedChildren}</a>
-        );
+        if(element.properties.type === "external"){
+          renderedElement = (
+            <a href={url}>{renderedChildren}</a>
+          );
+        }
+        else{
+          var url = this.makePath("previewPage", null, { id: element.properties.page });
+          url = "/#" + url;
+
+          renderedElement = (
+            <a href={url} onClick={this.transitionToPath.bind(this, url)}>{renderedChildren}</a>
+          );
+        }
+
         break;
       case "list":
         var list;
