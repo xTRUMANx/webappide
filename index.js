@@ -15,6 +15,12 @@ app.use(morgan("dev"));
 
 app.use("/api", apiRoutes);
 
+app.use(function(err, req, res, next){
+  console.log(err.stack);
+
+  res.status(500).end();
+});
+
 app.set("port", process.env.PORT || 3000);
 
 var log = debug("react-web-buider");

@@ -4,12 +4,15 @@ var Express = require("express"),
 
 var router = Router();
 
-router.get("/", function(req, res){
+router.get("/", function(req, res, next){
   if(req.query.id){
     DB.
       getPage(req.query.id).
       then(function(page){
         res.json(page);
+      }).
+      fail(function(err){
+        next(err);
       });
   }
   else if(req.query.layoutsPagesOnly){
@@ -17,6 +20,9 @@ router.get("/", function(req, res){
       getLayoutPages().
       then(function(pages){
         res.json(pages);
+      }).
+      fail(function(err){
+        next(err);
       });
   }
   else{
@@ -24,11 +30,14 @@ router.get("/", function(req, res){
       getPages().
       then(function(pages){
         res.json(pages);
+      }).
+      fail(function(err){
+        next(err);
       });
   }
 });
 
-router.post("/", function(req, res){
+router.post("/", function(req, res, next){
   var page = req.body;
 
   DB.
@@ -37,11 +46,11 @@ router.post("/", function(req, res){
       res.json({pageId: pageId});
     }).
     fail(function(err){
-      throw new Error(err);
+      next(err);
     });
 });
 
-router.delete("/", function(req, res){
+router.delete("/", function(req, res, next){
   var id = req.query.id;
 
   DB.
@@ -50,7 +59,7 @@ router.delete("/", function(req, res){
       res.end();
     }).
     fail(function(err){
-      throw new Error(err);
+      next(err);
     });
 });
 

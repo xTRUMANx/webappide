@@ -157,7 +157,6 @@ module.exports = {
 
         done();
       });
-
     });
 
     return deferred.promise;
@@ -178,6 +177,105 @@ module.exports = {
         }
         else{
           deferred.resolve();
+        }
+
+        done();
+      });
+    });
+
+    return deferred.promise;
+  },
+  getResources: function(){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function(err, client, done){
+      if(err){
+        return deferred.reject(err);
+      }
+
+      var sql = "select id, data from resources;";
+
+      client.query(sql, function(err, results){
+        if(err){
+          deferred.reject(err);
+        }
+        else{
+          var resources = results.rows.map(function(row){
+            var resource = row.data;
+            resource.id = row.id;
+
+            return resource;
+          });
+
+          deferred.resolve(resources);
+        }
+
+        done();
+      });
+    });
+
+    return deferred.promise;
+  },
+  getResource: function(id){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function(err, client, done){
+      if(err){
+        deferred.reject(err);
+      }
+
+      var sql = "select id, data from resources where id = $1;";
+
+      client.query(sql, [id], function(err, results){
+        if(err){
+          deferred.reject(err);
+        }
+        else{
+          var resource;
+
+          if(results.rowCount) {
+            resource = results.rows[0].data;
+            resource.id = results.rows[0].id;
+          }
+
+          deferred.resolve(resource);
+        }
+
+        done();
+      });
+    });
+
+    return deferred.promise;
+  },
+  saveResource: function(resource){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function(err, client, done){
+      if(err){
+        deferred.reject(err);
+      }
+
+      var sql, sqlArgs;
+
+      if(resource.id){
+        sql = "update resources set data = $1 where id = $2 returning id;";
+
+        sqlArgs = [resource, resource.id];
+      }
+      else {
+        sql = "insert into resources (data) values ($1) returning id;";
+
+        sqlArgs = [resource];
+      }
+
+      client.query(sql, sqlArgs, function(err, results){
+        if(err){
+          deferred.reject(err);
+        }
+        else{
+          var id = results.rows[0].id;
+
+          deferred.resolve(id);
         }
 
         done();
