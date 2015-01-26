@@ -35,7 +35,7 @@ var Pages = React.createClass({
               <span className="glyphicon glyphicon-remove"></span>
             </button>
             <Link to="previewPage" query={{id: page.pageId}} className="btn btn-info btn-xs slight-margin">Preview</Link>
-            <Link to="pageBuilder" query={{id: page.pageId}}>{page.properties.title}</Link>
+            <Link to="pageDesigner" query={{id: page.pageId}}>{page.properties.title}</Link>
           </td>
         </tr>
       );
@@ -45,7 +45,7 @@ var Pages = React.createClass({
       <div>
         <h1>Pages</h1>
         {this.state.err ? <p className="alert alert-danger">Failed to load data. Try refreshing. {this.state.err}</p> : null}
-        <Link className="btn btn-primary" to="pageBuilder">Create New Page</Link>
+        <Link className="btn btn-primary" to="pageDesigner">Create New Page</Link>
         <table className="table table-bordered table-condensed table-hover table-striped">
           <thead>
             <th>Page Title</th>

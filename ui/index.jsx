@@ -5,7 +5,7 @@ var React = require("react"),
   RouteHandler = ReactRouter.RouteHandler,
   Link = ReactRouter.Link;
 
-var PageBuilder = require("./PageBuilder"),
+var PageDesigner = require("./PageDesigner"),
   PreviewPage = require("./PreviewPage"),
   DatabaseDesigner = require("./DatabaseDesigner"),
   ResourceDesigner = require("./ResourceDesigner");
@@ -26,7 +26,7 @@ var App = React.createClass({
                 <Link to="pages">Pages</Link>
               </li>
               <li>
-                <Link to="pageBuilder">Page Builder</Link>
+                <Link to="pageDesigner">Page Designer</Link>
               </li>
               <li>
                 <Link to="databaseDesigner">Database Designer</Link>
@@ -43,7 +43,7 @@ var App = React.createClass({
 var routes = (
   <Route path="/" handler={App}>
     <DefaultRoute name="pages" path="" handler={Pages} />
-    <Route name="pageBuilder" path="builder" handler={PageBuilder} />
+    <Route name="pageDesigner" path="pageDesigner" handler={PageDesigner} />
     <Route name="databaseDesigner" path="databaseDesigner" handler={DatabaseDesigner} />
     <Route name="resourceDesigner" path="resourceDesigner" handler={ResourceDesigner} />
     <Route name="previewPage" path="preview" handler={PreviewPage} />

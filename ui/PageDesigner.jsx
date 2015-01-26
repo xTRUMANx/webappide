@@ -14,7 +14,7 @@ var ElementRenderer = require("./ElementRenderer");
 
 var ProgressBar = require("./ProgressBar");
 
-var PageBuilder = React.createClass({
+var PageDesigner = React.createClass({
   mixins: [Reflux.connect(ElementsStore), ReactRouter.State],
   componentDidMount: function(){
     var pageId = this.getQuery().id;
@@ -75,4 +75,4 @@ var PageBuilder = React.createClass({
   }
 });
 
-module.exports = PageBuilder;
+module.exports = PageDesigner;
