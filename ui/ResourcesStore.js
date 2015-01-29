@@ -23,6 +23,14 @@ var ResourcesStore = Reflux.createStore({
   emit: function(){
     this.trigger(this.emittedData());
   },
+  onNewResource: function(){
+    this.resource = {
+      nextPropertyId: 2,
+      properties: [{id: 1, name: "id", type: "number", uneditable: true}]
+    };
+
+    this.emit();
+  },
   onLoad: function(id){
     this.loading = true;
     this.err = false;
@@ -37,7 +45,7 @@ var ResourcesStore = Reflux.createStore({
     }.bind(this));
   },
   onAddProperty: function(){
-    var newProperty = {id: this.resource.nextPropertyId++};
+    var newProperty = {id: this.resource.nextPropertyId++, type: "text"};
 
     this.resource.properties.push(newProperty);
 

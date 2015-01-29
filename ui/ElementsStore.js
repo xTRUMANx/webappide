@@ -1,11 +1,14 @@
 var Reflux = require("reflux"),
   Actions = require("./ElementsActions"),
+  ElementsPropertiesSchema = require("./ElementsPropertiesSchema"),
   Request = require("request");
 
 var Store = Reflux.createStore({
   listenables: [Actions],
   init: function(){
     this.layoutPages = [];
+    this.resourceOptions = [];
+    this.resources = [];
   },
   getInitialState: function(){
     return this.emittedData();
@@ -19,7 +22,10 @@ var Store = Reflux.createStore({
       selectedElement: this.selectedElement,
       pages: this.pages,
       layoutPages: this.layoutPages,
-      layoutPage: this.layoutPage
+      layoutPage: this.layoutPage,
+      resourceOptions: this.resourceOptions,
+      resources: this.resources,
+      resourcePropertiesOptions: this.resourcePropertiesOptions
     };
   },
   emit: function(){
@@ -123,6 +129,30 @@ var Store = Reflux.createStore({
       this.emit();
     }.bind(this));
   },
+  onLoadResources: function(){
+    Request("http://localhost:3000/api/resources", function(err, res, body){
+      if(err){
+        return console.log(err);
+      }
+
+      if(res.statusCode === 200){
+        var resources = JSON.parse(body);
+        resources = setElementParent(resources);
+        this.resources = resources;
+        this.resourceOptions = resources.map(function(resource){
+          return {
+            label: resource.name,
+            value: resource.id
+          };
+        });
+      }
+      else{
+        this.err = err || res.statusCode;
+      }
+
+      this.emit();
+    }.bind(this));
+  },
   onSave: function(cb){
     var page = JSON.stringify(this.page, function(key, value){
       if(key === "parent" && value){
@@ -150,7 +180,7 @@ var Store = Reflux.createStore({
     }.bind(this));
   },
   onAddChildElement: function(newElementType, parentElement){
-    var newElement = { type: newElementType, nextChildId: 0, parent: parentElement, children: [] };
+    var newElement = { type: newElementType, nextChildId: 0, parent: parentElement, children: [], properties: {} };
 
     newElement.id = parentElement.id + "." + parentElement.nextChildId++;
 
@@ -258,6 +288,11 @@ var Store = Reflux.createStore({
   onUpdateElementProperty: function(elementId, propertyKey, value){
     var element = findElementById(elementId, this.page);
 
+    var sanitizer = ElementsPropertiesSchema[element.type][propertyKey].sanitizer;
+    if(sanitizer){
+      value = sanitizer(value);
+    }
+
     element.properties[propertyKey] = value;
 
     this.emit();
@@ -291,6 +326,22 @@ var Store = Reflux.createStore({
     parent.children.splice(elementIndex + 1, 0, element);
 
     this.emit();
+  },
+  resourcePropertiesOptions: function(element){
+    var form = findAncestorByType(element, "form");
+
+    if(!form || !form.properties.resource) return [];
+
+    var resource = this.resources.filter(function(r){
+      return r.id === form.properties.resource;
+    })[0];
+
+    return resource.properties.filter(function(p){return p.name !== "id";}).map(function(p){
+      return {
+        label: p.name,
+        value: p.id
+      }
+    });
   }
 });
 
@@ -329,6 +380,18 @@ function findElementById(elementId, elementsTree){
     })[0];
 
     return findElementById(elementId, childElement);
+  }
+}
+
+function findAncestorByType(element, type){
+  if(element.type === type){
+    return element;
+  }
+  else if(!element.parent){
+    return null;
+  }
+  else {
+    return findAncestorByType(element.parent, type);
   }
 }
 

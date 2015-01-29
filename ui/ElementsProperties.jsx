@@ -85,6 +85,10 @@ var ElementsProperties = React.createClass({
 
             var optionValues = this.props[propsKey];
 
+            if(typeof optionValues === "function"){
+              optionValues = optionValues(element);
+            }
+
             options = optionValues.map(function(optionValue, index){
               return <option key={index + 1} value={optionValue.value}>{optionValue.label}</option>
             });

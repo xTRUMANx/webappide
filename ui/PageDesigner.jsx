@@ -28,6 +28,7 @@ var PageDesigner = React.createClass({
 
     ElementsActions.loadPages();
     ElementsActions.loadLayoutPages();
+    ElementsActions.loadResources();
   },
   save: function(){
     this.setState({saveErr: null, saving: true, saved: false});
@@ -61,14 +62,14 @@ var PageDesigner = React.createClass({
           {this.state.saving ? <ProgressBar message="Saving" /> : null }
           {this.state.saveErr ? <p className="alert alert-danger">Failed to save data. Try again later. {this.state.err}</p> : null}
           <hr />
-          <ElementsProperties element={this.state.selectedElement} rootElement={this.state.elementsTree} layoutPages={this.state.layoutPages} pages={this.state.pages} elementsPropertiesSchema={elementsPropertiesSchema} />
+          <ElementsProperties element={this.state.selectedElement} rootElement={this.state.elementsTree} layoutPages={this.state.layoutPages} pages={this.state.pages} resourceOptions={this.state.resourceOptions} resourcePropertiesOptions={this.state.resourcePropertiesOptions} resources={this.state.resources} elementsPropertiesSchema={elementsPropertiesSchema} />
         </div>
         <div id="elementsTree" className="col-xs-4">
           <h2>Elements Tree</h2>
           <ElementsTree tree={this.state.elementsTree} selectedElement={this.state.selectedElement} showChildren={true} />
         </div>
         <div className="col-xs-8">
-          <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} pageBuilder={true} />
+          <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} pageBuilder={true} />
         </div>
       </div>
     );

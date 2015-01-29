@@ -11,6 +11,7 @@ var Actions = {
   load: Reflux.createAction(),
   loadPages: Reflux.createAction(),
   loadLayoutPages: Reflux.createAction(),
+  loadResources: Reflux.createAction(),
   newPage: Reflux.createAction(),
   save: Reflux.createAction()
 };

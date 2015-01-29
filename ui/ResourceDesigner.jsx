@@ -12,6 +12,9 @@ var ResourceDesigner = React.createClass({
     if(resourceId) {
       ResourcesActions.load(resourceId);
     }
+    else{
+      ResourcesActions.newResource();
+    }
   },
   addProperty: function(){
     ResourcesActions.addProperty();

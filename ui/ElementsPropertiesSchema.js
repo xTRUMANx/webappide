@@ -97,6 +97,20 @@ var elementsPropertiesSchema = {
   jumbotron: {
   },
   content: {
+  },
+  form: {
+    resource: {
+      valueType: "options",
+      values: "resourceOptions",
+      sanitizer: Number
+    }
+  },
+  input: {
+    resourceProperty: {
+      valueType: "options",
+      values: "resourcePropertiesOptions",
+      sanitizer: Number
+    }
   }
 };
 

@@ -2,6 +2,7 @@ var Reflux = require("reflux");
 
 var Actions = {
   load: Reflux.createAction(),
+  newResource: Reflux.createAction(),
   addProperty: Reflux.createAction(),
   removeProperty: Reflux.createAction(),
   updateProperty: Reflux.createAction(),

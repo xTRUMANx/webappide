@@ -1,7 +1,8 @@
 var React = require("react/addons"),
   cx = React.addons.classSet,
   ReactRouter = require("react-router"),
-  Link = ReactRouter.Link;
+  Link = ReactRouter.Link,
+  Input = require("./Input");
 
 var ElementRenderer = React.createClass({
   mixins: [ReactRouter.Navigation],
@@ -18,7 +19,7 @@ var ElementRenderer = React.createClass({
     var childElements = element.children || [];
 
     var renderedChildren = childElements.map(function(childElement, index){
-      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} />;
+      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} resourceOptions={this.props.resourceOptions} resourcePropertiesOptions={this.props.resourcePropertiesOptions} resources={this.props.resources} />;
     }.bind(this));
 
     switch (element.type){
@@ -196,6 +197,19 @@ var ElementRenderer = React.createClass({
           </div>
         );
 
+        break;
+      case "form":
+        renderedElement = (
+          <form className="form-horizontal">
+            {renderedChildren}
+          </form>
+        );
+
+        break;
+      case "input":
+        renderedElement = (
+          <Input element={element} resources={this.props.resources} />
+        );
         break;
       default :
         renderedElement = (
