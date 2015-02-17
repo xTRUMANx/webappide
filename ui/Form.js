@@ -9,7 +9,7 @@ var Form = React.createClass({
   componentDidMount: function(){
     var id = Utils.generateResourceDataId(this.props.element);
 
-    ResourceDataActions.newResourceData(id);
+    ResourceDataActions.newResourceData(id, this.props.element.properties.resource);
   },
   submit: function(e){
     e.preventDefault();

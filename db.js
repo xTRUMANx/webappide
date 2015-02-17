@@ -283,5 +283,42 @@ module.exports = {
     });
 
     return deferred.promise;
+  },
+  saveResourceData: function(resourceData){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function(err, client, done) {
+      if (err) {
+        deferred.reject(err);
+      }
+
+      var sql, sqlArgs;
+
+      if(resourceData.id){
+        sql = "update resourceData set data = $1, resourceId = $2 where id = $3 returning id;";
+
+        sqlArgs = [resourceData.data, resourceData.resourceId, resourceData.id];
+      }
+      else {
+        sql = "insert into resourceData (data, resourceId) values ($1, $2) returning id;";
+
+        sqlArgs = [resourceData.data, resourceData.resourceId];
+      }
+
+      client.query(sql, sqlArgs, function(err, results){
+        if(err){
+          deferred.reject(err);
+        }
+        else{
+          var id = results.rows[0].id;
+
+          deferred.resolve(id);
+        }
+
+        done();
+      });
+    });
+
+    return deferred.promise;
   }
 };
