@@ -2,6 +2,7 @@ var React = require("react/addons"),
   cx = React.addons.classSet,
   ReactRouter = require("react-router"),
   Link = ReactRouter.Link,
+  Form = require("./Form"),
   Input = require("./Input");
 
 var ElementRenderer = React.createClass({
@@ -200,9 +201,9 @@ var ElementRenderer = React.createClass({
         break;
       case "form":
         renderedElement = (
-          <form className="form-horizontal">
+          <Form element={element} pageBuilder={this.props.pageBuilder}>
             {renderedChildren}
-          </form>
+          </Form>
         );
 
         break;
