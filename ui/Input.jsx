@@ -7,7 +7,7 @@ var React = require("react"),
   ResourceDataActions = require("./ResourceDataActions");
 
 var Input = React.createClass({
-  mixins: [Reflux.connect(ElementsStore, "elementState"), Reflux.connect(ResourceDataStore, "resourceData")],
+  mixins: [Reflux.connect(ElementsStore, "elementState"), Reflux.connect(ResourceDataStore)],
   componentWillMount: function(){
     var ancestorForm = Utils.findAncestorByType(this.props.element, "form");
 
