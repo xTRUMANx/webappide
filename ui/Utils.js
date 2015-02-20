@@ -25,5 +25,8 @@ module.exports = {
     var id = this.findRoot(element).pageId + "-" + ancestorForm.id;
 
     return id;
+  },
+  generateResourceDataIdForDataEditor: function(resourceDataId){
+    return "DataEditor-" + resourceDataId;
   }
 };

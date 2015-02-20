@@ -16,6 +16,7 @@ var ResourcesStore = Reflux.createStore({
   emittedData: function(){
     return {
       resource: this.resource,
+      loading: this.loading,
       saving: this.saving,
       err: this.err
     };

@@ -34,6 +34,10 @@ var ResourceDesigner = React.createClass({
     ResourcesActions.save();
   },
   render: function(){
+    if(this.state.loading){
+      return <ProgressBar message="Loading" />
+    }
+
     var resourcePropertyTypes = ["text", "number", "date", "boolean"].map(function(resourcePropertyType, index){
       return (
         <option key={index}>

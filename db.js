@@ -320,5 +320,35 @@ module.exports = {
     });
 
     return deferred.promise;
+  },
+  getAllResourceData: function(resourceId){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function(err, client, done){
+      if(err){
+        deferred.reject(err);
+      }
+
+      var sql = "select id, data from resourceData where resourceId = $1 order by id;";
+
+      client.query(sql, [resourceId], function(err, results){
+        if(err){
+          deferred.reject(err);
+        }
+        else{
+          var allResourceData = [];
+
+          if(results.rowCount) {
+            allResourceData = results.rows;
+          }
+
+          deferred.resolve(allResourceData);
+        }
+
+        done();
+      });
+    });
+
+    return deferred.promise;
   }
 };

@@ -7,6 +7,7 @@ var ResourceDataStore = Reflux.createStore({
   listenables: [ResourceDataActions],
   init: function(){
     this.resourceData = {};
+    this.allResourceData = {};
 
     this.saveSucceeded = false;
     this.saveFailed = false;
@@ -18,6 +19,7 @@ var ResourceDataStore = Reflux.createStore({
   emittedData: function(){
     return {
       resourceData: this.resourceData,
+      allResourceData: this.allResourceData,
       saveSucceeded: this.saveSucceeded,
       saveFailed: this.saveFailed,
       saving: this.saving
@@ -59,8 +61,10 @@ var ResourceDataStore = Reflux.createStore({
 
     this.emit();
   },
-  onNewResourceData: function(id, resourceId){
-    this.resourceData[id] = { resourceId: resourceId, data: {} };
+  onNewResourceData: function(id, resourceId, resourceData){
+    this.resourceData[id] = resourceData || {};
+
+    this.resourceData[id].resourceId = resourceId;
 
     this.emit();
   },
@@ -70,6 +74,19 @@ var ResourceDataStore = Reflux.createStore({
     this.resourceData[id].data[propertyKey] = value;
 
     this.emit();
+  },
+  onLoadAll: function(resourceId){
+    this.loading = true;
+    this.err = false;
+
+    this.emit();
+
+    Request("http://localhost:3000/api/resourceData?resourceId=" + resourceId, function(err, res, body){
+      this.allResourceData[resourceId] = JSON.parse(body);
+
+      this.loading = false;
+      this.emit();
+    }.bind(this));
   }
 });
 

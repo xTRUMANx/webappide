@@ -8,7 +8,8 @@ var React = require("react"),
 var PageDesigner = require("./PageDesigner"),
   PreviewPage = require("./PreviewPage"),
   DatabaseDesigner = require("./DatabaseDesigner"),
-  ResourceDesigner = require("./ResourceDesigner");
+  ResourceDesigner = require("./ResourceDesigner"),
+  DataEditor = require("./DataEditor");
 
 var Pages = require("./Pages");
 
@@ -46,6 +47,7 @@ var routes = (
     <Route name="pageDesigner" path="pageDesigner" handler={PageDesigner} />
     <Route name="databaseDesigner" path="databaseDesigner" handler={DatabaseDesigner} />
     <Route name="resourceDesigner" path="resourceDesigner" handler={ResourceDesigner} />
+    <Route name="dataEditor" handler={DataEditor} />
     <Route name="previewPage" path="preview" handler={PreviewPage} />
   </Route>
 );

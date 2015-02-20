@@ -20,6 +20,7 @@ var DatabaseDesigner = React.createClass({
       return (
         <tr key={resource.id}>
           <td><Link to="resourceDesigner" query={{id: resource.id}}>{resource.name}</Link></td>
+          <td><Link to="dataEditor" query={{id: resource.id}}>View Data</Link></td>
         </tr>
       );
     });
@@ -34,6 +35,7 @@ var DatabaseDesigner = React.createClass({
         <table className="table table-bordered table-condensed table-hover table-striped">
           <thead>
             <th>Name</th>
+            <th>Data</th>
           </thead>
           <tbody>
             {resourcesRows}
