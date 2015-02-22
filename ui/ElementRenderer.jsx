@@ -212,10 +212,44 @@ var ElementRenderer = React.createClass({
           <Input element={element} resources={this.props.resources} />
         );
         break;
+      case "table":
+        renderedElement = (
+          <table className="table table-bordered table-condensed table-hover table-striped">
+            <tbody>
+              {renderedChildren}
+            </tbody>
+          </table>
+        );
+        break;
+      case "tableRow":
+        renderedElement = (
+          <tr>
+            {renderedChildren}
+          </tr>
+        );
+
+        break;
       default :
         renderedElement = (
           <h1>Unknown element: {element.type}</h1>
         );
+    }
+
+    if(element.parent && element.parent.type === "tableRow"){
+      if(element.parent.properties.isHeader || element.properties.isHeader){
+        renderedElement = (
+          <th>
+            {renderedElement}
+          </th>
+        );
+      }
+      else{
+        renderedElement = (
+          <td>
+            {renderedElement}
+          </td>
+        );
+      }
     }
 
     if(element.properties.layout){

@@ -111,7 +111,7 @@ var ElementsProperties = React.createClass({
           input = <input className="form-control" type="number" defaultValue={value || schema[propertyKey].defaultValue} min={schema[propertyKey].min} max={schema[propertyKey].max} onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
           break;
         case "checkbox":
-          input = <input className="checkbox" defaultValue={value} type="checkbox" onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
+          input = <input className="checkbox" defaultChecked={value} type="checkbox" onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
           break;
         case "text":
         default:
@@ -143,7 +143,7 @@ var ElementsProperties = React.createClass({
     });
 
     return (
-      <div className="row">
+      <div className="row" key={element.id}>
         <div className="col-sm-3">
           <h2>Element: {element.type}</h2>
           <button className={deleteButtonClasses} disabled={!element.parent} onClick={this.deleteElement}>

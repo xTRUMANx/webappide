@@ -111,6 +111,14 @@ var elementsPropertiesSchema = {
       values: "resourcePropertiesOptions",
       sanitizer: Number
     }
+  },
+  table: {
+
+  },
+  tableRow: {
+    isHeader: {
+      valueType: "checkbox"
+    }
   }
 };
 
@@ -124,6 +132,13 @@ propertyKeys.forEach(function(propertyKey){
     defaultValue: 0,
     ifChildOf: ["grid"]
   };
+
+  if(!elementsPropertiesSchema[propertyKey]["isHeader"]) {
+    elementsPropertiesSchema[propertyKey]["isHeader"] = {
+      valueType: "checkbox",
+      ifChildOf: ["tableRow"]
+    }
+  }
 });
 
 module.exports = elementsPropertiesSchema;
