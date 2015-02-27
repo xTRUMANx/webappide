@@ -3,7 +3,8 @@ var React = require("react/addons"),
   ReactRouter = require("react-router"),
   Link = ReactRouter.Link,
   Form = require("./Form"),
-  Input = require("./Input");
+  Input = require("./Input"),
+  DataRows = require("./DataRows");
 
 var ElementRenderer = React.createClass({
   mixins: [ReactRouter.Navigation],
@@ -221,6 +222,13 @@ var ElementRenderer = React.createClass({
           </table>
         );
         break;
+      case "dataTable":
+        renderedElement = (
+          <table className="table table-condensed table-hover table-striped">
+            {renderedChildren}
+          </table>
+        );
+        break;
       case "tableRow":
         renderedElement = (
           <tr>
@@ -228,6 +236,9 @@ var ElementRenderer = React.createClass({
           </tr>
         );
 
+        break;
+      case "dataRows":
+        renderedElement = <DataRows element={element} resources={this.props.resources} />
         break;
       default :
         renderedElement = (

@@ -113,11 +113,26 @@ var elementsPropertiesSchema = {
     }
   },
   table: {
-
+  },
+  dataTable: {
+    resource: {
+      valueType: "options",
+      values: "resourceOptions",
+      sanitizer: Number
+    }
   },
   tableRow: {
     isHeader: {
       valueType: "checkbox"
+    }
+  },
+  dataRows: {
+    // TODO: Change valueType to multi-something that presents two columns (available and selected) via new component
+    selectedFields: {
+      valueType: "multi-options",
+      rowsShown: 3,
+      selectMultiple: true,
+      values: "resourcePropertiesOptions"
     }
   }
 };

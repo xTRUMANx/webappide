@@ -288,7 +288,10 @@ var Store = Reflux.createStore({
   onUpdateElementProperty: function(elementId, propertyKey, value){
     var element = findElementById(elementId, this.page);
 
-    var sanitizer = ElementsPropertiesSchema[element.type][propertyKey].sanitizer;
+    var elementPropertySchema = ElementsPropertiesSchema[element.type][propertyKey];
+
+    var sanitizer = elementPropertySchema.sanitizer;
+
     if(sanitizer){
       value = sanitizer(value);
     }
@@ -328,12 +331,14 @@ var Store = Reflux.createStore({
     this.emit();
   },
   resourcePropertiesOptions: function(element){
-    var form = findAncestorByType(element, "form");
+    var ancestorType = element.type === "input" ? "form" : "dataTable";
 
-    if(!form || !form.properties.resource) return [];
+    var ancestor = findAncestorByType(element, ancestorType);
+
+    if(!ancestor || !ancestor.properties.resource) return [];
 
     var resource = this.resources.filter(function(r){
-      return r.id === form.properties.resource;
+      return r.id === ancestor.properties.resource;
     })[0];
 
     return resource.properties.filter(function(p){return p.name !== "id";}).map(function(p){

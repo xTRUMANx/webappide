@@ -1,6 +1,7 @@
 var React = require("react/addons"),
   cx = React.addons.classSet,
-  ElementsActions = require("./ElementsActions");
+  ElementsActions = require("./ElementsActions"),
+  MultiOptions = require("./MultiOptions");
 
 var ElementsProperties = React.createClass({
   updateElementProperty: function(propertyKey, element, e){
@@ -102,7 +103,9 @@ var ElementsProperties = React.createClass({
           }
 
           input = (
-            <select className="form-control" defaultValue={value} onChange={this.updateElementProperty.bind(this, propertyKey, element)}>
+            <select className="form-control"
+              size={schema[propertyKey].rowsShown} multiple={schema[propertyKey].selectMultiple}
+              defaultValue={value} onChange={this.updateElementProperty.bind(this, propertyKey, element)}>
               {options}
             </select>
           );
@@ -112,6 +115,17 @@ var ElementsProperties = React.createClass({
           break;
         case "checkbox":
           input = <input className="checkbox" defaultChecked={value} type="checkbox" onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
+          break;
+        case "multi-options":
+          var propsKey = schema[propertyKey].values;
+
+          var options = this.props[propsKey];
+
+          if(typeof options === "function"){
+            options = options(element);
+          }
+
+          input = <MultiOptions options={options} selectedOptions={element.properties[propertyKey] || []} onChange={this.updateElementProperty.bind(this, propertyKey, element)} />;
           break;
         case "text":
         default:
