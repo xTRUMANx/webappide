@@ -71,7 +71,7 @@ var DataRows = React.createClass({
           })[0];
 
           return (
-            <td key={property.id}>{resourceData.data[property.name] ? resourceData.data[property.name].toString() : resourceData.data[property.name]}</td>
+            <td key={property.id}>{resourceData.data[property.id] ? resourceData.data[property.id].toString() : resourceData.data[property.id]}</td>
           );
         }.bind(this));
 

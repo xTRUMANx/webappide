@@ -76,7 +76,7 @@ var DataViewer = React.createClass({
 
     var dataRows = this.props.resourceData.map(function(resourceData){
       var cells = this.props.resource.properties.map(function(property){
-        var value = resourceData.data[property.name];
+        var value = resourceData.data[property.id];
 
         if(property.name === "id"){
           value = resourceData.id;
@@ -129,17 +129,17 @@ var ResourceDataPropertyEditor = React.createClass({
     ResourceDataActions.updateResourceDataProperty(propertyKey, id, value)
   },
   render: function(){
-    var value = this.props.resourceData.data[this.props.property.name];
+    var value = this.props.resourceData.data[this.props.property.id];
     var editor;
 
     var id = Utils.generateResourceDataIdForDataEditor(this.props.resourceData.id);
 
     switch (this.props.property.type){
       case "boolean":
-        editor = <input type="checkbox" ref="input" defaultChecked={value} onChange={this.updateResourceDataProperty.bind(this, this.props.property.name, id)} />
+        editor = <input type="checkbox" ref="input" defaultChecked={value} onChange={this.updateResourceDataProperty.bind(this, this.props.property.id, id)} />
         break;
       default :
-        editor = <input type={this.props.property.type} className="form-control" ref="input" defaultValue={this.props.resourceData.data[this.props.property.name]} onChange={this.updateResourceDataProperty.bind(this, this.props.property.name, id)} />
+        editor = <input type={this.props.property.type} className="form-control" ref="input" defaultValue={value} onChange={this.updateResourceDataProperty.bind(this, this.props.property.id, id)} />
     }
 
     return editor;

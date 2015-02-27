@@ -50,7 +50,7 @@ var Input = React.createClass({
             <div className="form-group">
                 <div className="checkbox">
                   <label>
-                    <input type="checkbox" defaultValue={resourceData[resourceProperty.name]} onChange={this.updateResourceDataProperty.bind(this, resourceProperty.name, ancestorForm.id)} />
+                    <input type="checkbox" defaultValue={resourceData[resourceProperty.name]} onChange={this.updateResourceDataProperty.bind(this, resourceProperty.id, ancestorForm.id)} />
                     {resourceProperty.name}
                   </label>
                 </div>
@@ -62,7 +62,7 @@ var Input = React.createClass({
             <div className="form-group">
               <label className="control-label">{resourceProperty.name}</label>
               <div className="">
-                <input className="form-control" type={resourceProperty.type} defaultValue={resourceData[resourceProperty.name]} onChange={this.updateResourceDataProperty.bind(this, resourceProperty.name, ancestorForm.id)} />
+                <input className="form-control" type={resourceProperty.type} defaultValue={resourceData[resourceProperty.name]} onChange={this.updateResourceDataProperty.bind(this, resourceProperty.id, ancestorForm.id)} />
               </div>
             </div>
           );

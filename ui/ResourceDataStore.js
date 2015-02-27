@@ -65,6 +65,11 @@ var ResourceDataStore = Reflux.createStore({
     this.resourceData[id] = resourceData || {};
 
     this.resourceData[id].resourceId = resourceId;
+    this.resourceData[id].data = this.resourceData[id].data || {};
+
+    this.saveSucceeded = false;
+    this.saveFailed = false;
+    this.saving = false;
 
     this.emit();
   },
