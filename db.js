@@ -3,6 +3,33 @@ var PG = require("pg"),
 
 var Config = require("./config");
 
+function executeQuery(sql, sqlArgs, cb){
+  if(typeof sqlArgs === "function") {
+    cb = sqlArgs;
+  }
+
+  var deferred = Q.defer();
+
+  PG.connect(Config.dbConnectionString, function(err, client, done){
+    if(err){
+      deferred.reject(err);
+    }
+
+    client.query(sql, sqlArgs, function(err, results){
+      if(err){
+        deferred.reject(err);
+
+        done();
+      }
+      else{
+        cb(err, results, done, deferred);
+      }
+    });
+  });
+
+  return deferred.promise;
+}
+
 module.exports = {
   getPages: function(){
     var deferred = Q.defer();
@@ -140,7 +167,7 @@ module.exports = {
         sqlArgs = [page, page.pageId];
       }
       else {
-        sql = "insert into pages (data) values ($1) returning id;";
+        sql = "insert into pages (data, siteId) values ($1, 1) returning id;";
 
         sqlArgs = [page];
       }
@@ -350,5 +377,50 @@ module.exports = {
     });
 
     return deferred.promise;
+  },
+  saveSite: function(site){
+    var sql = "insert into sites(data) values($1) returning id";
+
+    var sqlArgs = [site];
+
+    return executeQuery(sql, sqlArgs, function(err, results, done, deferred){
+      var id = results.rows[0]["id"];
+
+      deferred.resolve(id);
+
+      done();
+    });
+  },
+  getSite: function(id){
+    var sql = "select s.id, s.data, array_agg(row_to_json(row(p.id, p.data, p.siteId)::pages) order by p.id) filter (where p.id is not null) as sitePages from sites s left join pages p on s.id = p.siteId where s.id = $1 group by s.id, s.data;";
+
+    var sqlArgs = [id];
+
+    return executeQuery(sql, sqlArgs, function(err, results, done, deferred){
+
+      var site = results.rows[0]["data"];
+      site.id = results.rows[0]["id"];
+      site.pages = results.rows[0]["sitepages"];
+
+      deferred.resolve(site);
+
+      done();
+    });
+  },
+  getSites: function(){
+    var sql = "select id, data from sites order by id";
+
+    return executeQuery(sql, function(err, results, done, deferred){
+      var sites = results.rows.map(function(row){
+        var site = row["data"];
+        site.id = row["id"];
+
+        return site;
+      });
+
+      deferred.resolve(sites);
+
+      done();
+    });
   }
 };

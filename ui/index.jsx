@@ -9,7 +9,11 @@ var PageDesigner = require("./PageDesigner"),
   PreviewPage = require("./PreviewPage"),
   DatabaseDesigner = require("./DatabaseDesigner"),
   ResourceDesigner = require("./ResourceDesigner"),
-  DataEditor = require("./DataEditor");
+  DataEditor = require("./DataEditor"),
+  Sites = require("./Sites"),
+  ListSites = require("./ListSites"),
+  CreateSite = require("./CreateSite"),
+  ViewSite = require("./ViewSite");
 
 var Pages = require("./Pages");
 
@@ -23,6 +27,9 @@ var App = React.createClass({
               <Link className="navbar-brand" to="/">React Web Builder</Link>
             </div>
             <ul className="nav navbar-nav">
+              <li>
+                <Link to="sites">Sites</Link>
+              </li>
               <li>
                 <Link to="pages">Pages</Link>
               </li>
@@ -44,6 +51,11 @@ var App = React.createClass({
 var routes = (
   <Route path="/" handler={App}>
     <DefaultRoute name="pages" path="" handler={Pages} />
+    <Route name="sites" handler={Sites}>
+      <DefaultRoute name="listSites" handler={ListSites} />
+      <Route name="createSite" handler={CreateSite} />
+      <Route name="viewSite" path="view/:siteId" handler={ViewSite} />
+    </Route>
     <Route name="pageDesigner" path="pageDesigner" handler={PageDesigner} />
     <Route name="databaseDesigner" path="databaseDesigner" handler={DatabaseDesigner} />
     <Route name="resourceDesigner" path="resourceDesigner" handler={ResourceDesigner} />
