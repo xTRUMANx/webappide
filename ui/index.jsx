@@ -10,7 +10,6 @@ var PageDesigner = require("./PageDesigner"),
   DatabaseDesigner = require("./DatabaseDesigner"),
   ResourceDesigner = require("./ResourceDesigner"),
   DataEditor = require("./DataEditor"),
-  Sites = require("./Sites"),
   ListSites = require("./ListSites"),
   CreateSite = require("./CreateSite"),
   ViewSite = require("./ViewSite");
@@ -31,12 +30,6 @@ var App = React.createClass({
                 <Link to="sites">Sites</Link>
               </li>
               <li>
-                <Link to="pages">Pages</Link>
-              </li>
-              <li>
-                <Link to="pageDesigner">Page Designer</Link>
-              </li>
-              <li>
                 <Link to="databaseDesigner">Database Designer</Link>
               </li>
             </ul>
@@ -50,17 +43,18 @@ var App = React.createClass({
 
 var routes = (
   <Route path="/" handler={App}>
-    <DefaultRoute name="pages" path="" handler={Pages} />
-    <Route name="sites" handler={Sites}>
+    <Route name="sites" handler={RouteHandler}>
       <DefaultRoute name="listSites" handler={ListSites} />
       <Route name="createSite" handler={CreateSite} />
-      <Route name="viewSite" path="view/:siteId" handler={ViewSite} />
+      <Route path="view/:siteId" handler={RouteHandler}>
+        <DefaultRoute name="viewSite" handler={ViewSite} />
+        <Route name="pageDesigner" path="pageDesigner/:pageId?" handler={PageDesigner} />
+        <Route name="previewPage" path="preview/:pageId" handler={PreviewPage} />
+      </Route>
     </Route>
-    <Route name="pageDesigner" path="pageDesigner" handler={PageDesigner} />
     <Route name="databaseDesigner" path="databaseDesigner" handler={DatabaseDesigner} />
     <Route name="resourceDesigner" path="resourceDesigner" handler={ResourceDesigner} />
     <Route name="dataEditor" handler={DataEditor} />
-    <Route name="previewPage" path="preview" handler={PreviewPage} />
   </Route>
 );
 

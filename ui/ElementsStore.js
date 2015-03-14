@@ -31,7 +31,9 @@ var Store = Reflux.createStore({
   emit: function(){
     this.trigger(this.emittedData());
   },
-  onNewPage: function(){
+  onNewPage: function(siteId){
+    this.siteId = siteId;
+
     var page = {
       id: "0",
       nextChildId: 0,
@@ -47,8 +49,8 @@ var Store = Reflux.createStore({
 
     this.emit();
   },
-  onLoad: function(pageId){
-    if(this.loaded) this.emit();
+  onLoad: function(pageId, siteId){
+    this.siteId = siteId;
 
     this.loading = true;
 
@@ -169,6 +171,7 @@ var Store = Reflux.createStore({
       headers: {
         "Content-type": "application/json"
       },
+      qs: {siteId: this.siteId},
       body: page
     }, function(err, res, body){
       if(!this.page.pageId){

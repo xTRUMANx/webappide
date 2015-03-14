@@ -106,6 +106,36 @@ var SitesStore = Reflux.createStore({
       this.loadingSite = false;
       this.emit();
     }.bind(this));
+  },
+  onDeletePage: function(page){
+    var pageId = page.id;
+
+    this.emit();
+
+    Request("http://localhost:3000/api/pages", {method: "delete", qs: {id: pageId}}, function(err, res, body){
+      if(err){
+        return console.log(err);
+      }
+
+      if(res.statusCode === 200){
+        var page = this.loadedSite.pages.filter(function(p){ return p.pageId === pageId})[0];
+
+        var pageIndex = this.loadedSite.pages.indexOf(page);
+
+        this.loadedSite.pages.splice(pageIndex, 1);
+
+        SitesActions.deletePage.completed();
+      }
+      else{
+        this.err = err || res.statusCode;
+
+        SitesActions.deletePage.failed(this.err);
+      }
+
+      this.emit();
+    }.bind(this));
+
+    return 42;
   }
 });
 

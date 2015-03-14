@@ -38,10 +38,11 @@ router.get("/", function(req, res, next){
 });
 
 router.post("/", function(req, res, next){
-  var page = req.body;
+  var page = req.body,
+    siteId = req.query.siteId;
 
   DB.
-    savePage(page).
+    savePage(page, siteId).
     then(function(pageId){
       res.json({pageId: pageId});
     }).

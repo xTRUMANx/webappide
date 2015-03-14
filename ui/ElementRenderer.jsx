@@ -8,9 +8,6 @@ var React = require("react/addons"),
 
 var ElementRenderer = React.createClass({
   mixins: [ReactRouter.Navigation],
-  transitionToPath: function(path){
-    this.transitionTo(path);
-  },
   render: function(){
     var element = this.props.element;
 
@@ -21,7 +18,7 @@ var ElementRenderer = React.createClass({
     var childElements = element.children || [];
 
     var renderedChildren = childElements.map(function(childElement, index){
-      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} resourceOptions={this.props.resourceOptions} resourcePropertiesOptions={this.props.resourcePropertiesOptions} resources={this.props.resources} />;
+      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} resourceOptions={this.props.resourceOptions} resourcePropertiesOptions={this.props.resourcePropertiesOptions} resources={this.props.resources} siteId={this.props.siteId} />;
     }.bind(this));
 
     switch (element.type){
@@ -58,11 +55,14 @@ var ElementRenderer = React.createClass({
           );
         }
         else{
-          var url = this.makePath("previewPage", null, { id: element.properties.page });
-          url = "/#" + url;
+          var url = "";
+
+          if(element.properties.page){
+            url = this.makePath("previewPage", { pageId: element.properties.page, siteId: this.props.siteId });
+          }
 
           renderedElement = (
-            <a href={url} onClick={this.transitionToPath.bind(this, url)}>{renderedChildren}</a>
+            <Link to={url}>{renderedChildren}</Link>
           );
         }
 

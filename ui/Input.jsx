@@ -21,7 +21,7 @@ var Input = React.createClass({
     ResourceDataActions.updateResourceDataProperty(propertyKey, this.state.resourceDataId, value)
   },
   render: function(){
-    if(!this.props.resources.length) {
+    if(!this.props.resources || !this.props.resources.length) {
       return (
         <p>[Input Element]</p>
       );

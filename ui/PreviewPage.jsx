@@ -8,12 +8,22 @@ var React = require("react/addons"),
 
 var PreviewPage = React.createClass({
   mixins: [Reflux.connect(ElementsStore), ReactRouter.State],
+  getInitialState: function(){
+    return {siteId: this.getParams().siteId, pageId: this.getParams().pageId};
+  },
   componentDidMount: function(){
-    var pageId = this.getQuery().id;
-
-    ElementsActions.load(pageId);
-
+    ElementsActions.load(this.state.pageId);
     ElementsActions.loadLayoutPages();
+    ElementsActions.loadResources();
+  },
+  componentWillReceiveProps: function(){
+    var currentPageId = this.getParams().pageId;
+
+    if(currentPageId !== this.state.pageId){
+      this.setState({pageId: currentPageId});
+
+      ElementsActions.load(currentPageId);
+    }
   },
   render: function(){
     if(this.state.loading) {
@@ -32,7 +42,7 @@ var PreviewPage = React.createClass({
       <div>
         <h2 className="text-center">Previewed Page: {this.state.elementsTree.properties.title}</h2>
         <hr />
-        <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} />
+        <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} siteId={this.state.siteId} />
       </div>
     );
   }

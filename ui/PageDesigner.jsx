@@ -16,14 +16,17 @@ var ProgressBar = require("./ProgressBar");
 
 var PageDesigner = React.createClass({
   mixins: [Reflux.connect(ElementsStore), ReactRouter.State],
+  getInitialState: function(){
+    return {siteId: this.getParams().siteId};
+  },
   componentDidMount: function(){
-    var pageId = this.getQuery().id;
+    var pageId = this.getParams().pageId;
 
     if(pageId) {
-      ElementsActions.load(pageId);
+      ElementsActions.load(pageId, this.state.siteId);
     }
     else{
-      ElementsActions.newPage();
+      ElementsActions.newPage(this.state.siteId);
     }
 
     ElementsActions.loadPages();
@@ -69,7 +72,7 @@ var PageDesigner = React.createClass({
           <ElementsTree tree={this.state.elementsTree} selectedElement={this.state.selectedElement} showChildren={true} />
         </div>
         <div className="col-xs-8">
-          <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} pageBuilder={true} />
+          <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} pageBuilder={true} siteId={this.state.siteId} />
         </div>
       </div>
     );

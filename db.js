@@ -151,7 +151,7 @@ module.exports = {
 
     return deferred.promise;
   },
-  savePage: function(page){
+  savePage: function(page, siteId){
     var deferred = Q.defer();
 
     PG.connect(Config.dbConnectionString, function(err, client, done){
@@ -162,14 +162,14 @@ module.exports = {
       var sql, sqlArgs;
 
       if(page.pageId){
-        sql = "update pages set data = $1 where id = $2 returning id;";
+        sql = "update pages set data = $1 where id = $2 and siteId = $3 returning id;";
 
-        sqlArgs = [page, page.pageId];
+        sqlArgs = [page, page.pageId, siteId];
       }
       else {
-        sql = "insert into pages (data, siteId) values ($1, 1) returning id;";
+        sql = "insert into pages (data, siteId) values ($1, $2) returning id;";
 
-        sqlArgs = [page];
+        sqlArgs = [page, siteId];
       }
 
       client.query(sql, sqlArgs, function(err, results){
