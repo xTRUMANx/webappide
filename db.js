@@ -22,7 +22,7 @@ function executeQuery(sql, sqlArgs, cb){
         done();
       }
       else{
-        cb(err, results, done, deferred);
+        cb(results, done, deferred);
       }
     });
   });
@@ -378,12 +378,12 @@ module.exports = {
 
     return deferred.promise;
   },
-  saveSite: function(site){
-    var sql = "insert into sites(data) values($1) returning id";
+  saveSite: function(site, userId){
+    var sql = "insert into sites(data, userId, createdon) values($1, $2, now()) returning id";
 
-    var sqlArgs = [site];
+    var sqlArgs = [site, userId];
 
-    return executeQuery(sql, sqlArgs, function(err, results, done, deferred){
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
       var id = results.rows[0]["id"];
 
       deferred.resolve(id);
@@ -396,8 +396,7 @@ module.exports = {
 
     var sqlArgs = [id];
 
-    return executeQuery(sql, sqlArgs, function(err, results, done, deferred){
-
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
       var site = results.rows[0]["data"];
       site.id = results.rows[0]["id"];
       site.pages = results.rows[0]["sitepages"];
@@ -407,10 +406,12 @@ module.exports = {
       done();
     });
   },
-  getSites: function(){
-    var sql = "select id, data from sites order by id";
+  getSites: function(userId){
+    var sql = "select id, data from sites where userId = $1 order by id";
 
-    return executeQuery(sql, function(err, results, done, deferred){
+    var sqlArgs = [userId]
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
       var sites = results.rows.map(function(row){
         var site = row["data"];
         site.id = row["id"];
@@ -419,6 +420,39 @@ module.exports = {
       });
 
       deferred.resolve(sites);
+
+      done();
+    });
+  },
+  registerUser: function(registrationForm){
+    var sql = "insert into users(email, hashedPassword, createdon) values($1, $2, now())";
+
+    var sqlArgs = [registrationForm.email, registrationForm.hashedPassword];
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
+      deferred.resolve();
+
+      done();
+    });
+  },
+  emailInUse: function(email){
+    var sql = "select count(email) > 0 as \"emailInUse\" from users where email = $1";
+
+    var sqlArgs = [email];
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
+      deferred.resolve(results.rows[0].emailInUse);
+
+      done();
+    });
+  },
+  authenticate: function(credentials){
+    var sql = "select count(email) > 0 as \"validCredentails\" from users where email = $1 and hashedpassword = $2";
+
+    var sqlArgs = [credentials.email, credentials.hashedPassword];
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
+      deferred.resolve(results.rows[0].validCredentails);
 
       done();
     });

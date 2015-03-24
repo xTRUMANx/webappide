@@ -1,16 +1,17 @@
 var Gulp = require("gulp"),
   GulpReact = require("gulp-react"),
   GulpRename = require("gulp-rename"),
-  GulpBrowserify = require("gulp-browserify");
+  GulpBrowserify = require("gulp-browserify"),
+  GulpNotify = require("gulp-notify")
 
 Gulp.task("jsx-transform", function(cb){
   var stream = Gulp.src("./ui/**/*").
     pipe(GulpReact()).
-    on("error", function(err){
+    on("error", GulpNotify.onError(function(err){
       console.log(err);
 
-      this.end();
-    }).
+      return "Reactification Failed!";
+    })).
     pipe(GulpRename(function(path){
       path.extname = ".js";
     })).
@@ -25,7 +26,8 @@ Gulp.task("bundle", ["jsx-transform"], function(){
   Gulp.src("./ui-transformed/index.js").
     pipe(GulpBrowserify()).
     pipe(GulpRename("bundle.js")).
-    pipe(Gulp.dest("./public/js/"));
+    pipe(Gulp.dest("./public/js/")).
+    pipe(GulpNotify("Bundle Complete!"));
 });
 
 Gulp.task("watch", ["bundle"], function(){

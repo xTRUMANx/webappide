@@ -13,11 +13,10 @@ var CreateSite = React.createClass({
     var name = this.refs.name.getDOMNode().value;
 
     SitesActions.createSite({name: name}, function(siteId){
-      this.transitionTo("viewSite", {id: siteId});
+      this.transitionTo("viewSite", {siteId: siteId});
     }.bind(this));
   },
   render: function () {
-    console.log("state", this.state)
     return (
       <div>
         <h1>Create Site</h1>

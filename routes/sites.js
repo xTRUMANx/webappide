@@ -19,7 +19,7 @@ router.get("/", function(req, res, next){
   }
   else{
     DB.
-      getSites().
+      getSites(req.session.userId).
       then(function(sites){
         res.json(sites);
       }).
@@ -30,10 +30,8 @@ router.get("/", function(req, res, next){
 });
 
 router.post("/", function(req, res, next){
-  console.log(req.body);
-
   DB.
-    saveSite(req.body).
+    saveSite(req.body, req.session.userId).
     then(function(id){
       res.json({id: id});
     }).
