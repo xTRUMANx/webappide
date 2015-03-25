@@ -26,9 +26,20 @@ router.post("/register", function(req, res, next){
           DB.
             registerUser(registrationForm).
             then(function(){
-              req.session.email = registrationForm.email;
+              if(req.session.createdSite){
+                DB.
+                  transferSites(req.session.id, registrationForm.email).
+                  then(function(){
+                    req.session.userId = registrationForm.email;
 
-              res.json({email: registrationForm.email});
+                    res.json({userId: registrationForm.email});
+                  });
+              }
+              else{
+                req.session.userId = registrationForm.email;
+
+                res.json({userId: registrationForm.email});
+              }
             }).
             fail(function(err){
               next(err);
@@ -51,9 +62,20 @@ router.post("/login", function(req, res, next){
       authenticate(credentials).
       then(function(validCredentials){
         if(validCredentials){
-          req.session.email = credentials.email;
+          if(req.session.createdSite){
+            DB.
+              transferSites(req.session.id, credentials.email).
+              then(function(){
+                req.session.userId = credentials.email;
 
-          res.json({email: credentials.email});
+                res.json({userId: credentials.email});
+              });
+          }
+          else{
+            req.session.userId = credentials.email;
+
+            res.json({userId: credentials.email});
+          }
         }
         else{
           res.status(401).end();
@@ -71,6 +93,15 @@ router.get("/logout", function(req, res, next){
 
     res.end();
   });
+});
+
+router.get("/whoami", function(req, res, next){
+  if(req.session.userId !== req.session.id){
+    res.json({userId: req.session.userId})
+  }
+  else{
+    res.end();
+  }
 });
 
 function ValidationRegistrationForm(registrationForm){

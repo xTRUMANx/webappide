@@ -19,13 +19,25 @@ var HomePage = require("./HomePage"),
   LoginPage = require("./LoginPage");
   LogoutPage = require("./LogoutPage");
 
-var AuthenticationStore = require("./AuthenticationStore");
+var AuthenticationStore = require("./AuthenticationStore"),
+  AuthenticationActions = require("./AuthenticationActions");
+
+var ProgressBar = require("./ProgressBar");
 
 var App = React.createClass({
   mixins: [Reflux.connect(AuthenticationStore, "AuthenticationStoreState")],
+  componentDidMount: function(){
+    AuthenticationActions.checkSession();
+  },
   render: function(){
+    if(this.state.AuthenticationStoreState.checkingSession){
+      return (
+        <ProgressBar message="Looking for an existing session." />
+      );
+    }
+
     var authenticationLinks;
-    if(this.state.AuthenticationStoreState.email){
+    if(this.state.AuthenticationStoreState.userId){
       authenticationLinks = (
         <ul className="nav navbar-nav navbar-right">
           <li>

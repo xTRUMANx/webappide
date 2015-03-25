@@ -33,6 +33,10 @@ router.post("/", function(req, res, next){
   DB.
     saveSite(req.body, req.session.userId).
     then(function(id){
+      if(req.session.userId === req.session.id){
+        req.session.createdSite = true;
+      }
+
       res.json({id: id});
     }).
     fail(function(err){

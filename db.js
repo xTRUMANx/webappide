@@ -456,5 +456,16 @@ module.exports = {
 
       done();
     });
+  },
+  transferSites: function(oldUserId, newUserId){
+    var sql = "update sites set userId = $1 where userId = $2";
+
+    var sqlArgs = [newUserId, oldUserId];
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
+      deferred.resolve();
+
+      done();
+    });
   }
 };

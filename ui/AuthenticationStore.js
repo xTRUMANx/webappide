@@ -13,8 +13,9 @@ var AuthenticationStore = Reflux.createStore({
   },
   emittedData: function(){
     return {
-      email: this.email,
-      loggingIn: this.loggingIn
+      userId: this.userId,
+      loggingIn: this.loggingIn,
+      checkingSession: this.checkingSession
     };
   },
   emit: function(){
@@ -31,7 +32,7 @@ var AuthenticationStore = Reflux.createStore({
         AuthenticationActions.register.failed(err || body || res.statusCode);
       }
       else{
-        this.email = body.email;
+        this.userId = body.userId;
 
         AuthenticationActions.register.completed();
 
@@ -59,7 +60,7 @@ var AuthenticationStore = Reflux.createStore({
         }
       }
       else{
-        this.email = body.email;
+        this.userId = body.userId;
 
         AuthenticationActions.login.completed();
       }
@@ -77,12 +78,33 @@ var AuthenticationStore = Reflux.createStore({
         AuthenticationActions.logout.failed(err || body || res.statusCode);
       }
       else{
-        delete this.email;
+        delete this.userId;
 
         AuthenticationActions.logout.completed();
 
         this.emit();
       }
+    }.bind(this));
+  },
+  onCheckSession: function(){
+    this.checkingSession = true;
+    this.emit();
+
+    Request({
+      url: "http://localhost:3000/api/authentication/whoami",
+      json: true,
+    }, function(err, res, body){
+      if(!err && res.statusCode === 200){
+        if(body && body.userId){
+          this.userId = body.userId;
+
+          this.emit();
+        }
+      }
+
+      this.checkingSession = false;
+
+      this.emit();
     }.bind(this));
   }
 });
