@@ -12,7 +12,7 @@ function executeQuery(sql, sqlArgs, cb){
 
   PG.connect(Config.dbConnectionString, function(err, client, done){
     if(err){
-      deferred.reject(err);
+      return deferred.reject(err);
     }
 
     client.query(sql, sqlArgs, function(err, results){
@@ -25,6 +25,69 @@ function executeQuery(sql, sqlArgs, cb){
         cb(results, done, deferred);
       }
     });
+  });
+
+  return deferred.promise;
+}
+
+function executeQueries(queries){
+  var deferred = Q.defer();
+  var queryIndex = 0;
+
+  PG.connect(Config.dbConnectionString, function(err, client, done){
+    if(err){
+      return deferred.reject(err);
+    }
+
+    client.query("BEGIN", function(err, results){
+      if(err){
+        deferred.reject(err);
+
+        done();
+      }
+      else{
+        var query = queries[queryIndex]();
+
+        runNextQuery(query);
+      }
+    });
+
+    function runNextQuery(query){
+      client.query(query.sql, query.sqlArgs, function(err, results){
+        if(err){
+          client.query("ROLLBACK", function(rollbackErr){
+            deferred.reject([err, rollbackErr]);
+
+            done();
+          });
+        }
+        else{
+          query.cb(results, next);
+        }
+      });
+    }
+
+    function next(result){
+      queryIndex++;
+
+      if(queryIndex < queries.length){
+        var query = queries[queryIndex](result);
+
+        runNextQuery(query);
+      }
+      else{
+        client.query("COMMIT", function(err){
+          if(err){
+            deferred.reject(err);
+          }
+          else{
+            deferred.resolve(result);
+          }
+
+          done();
+        })
+      }
+    }
   });
 
   return deferred.promise;
@@ -464,6 +527,53 @@ module.exports = {
 
     return executeQuery(sql, sqlArgs, function(results, done, deferred){
       deferred.resolve();
+
+      done();
+    });
+  },
+  deploySite: function(deploymentMessage, siteId){
+    return executeQueries([
+      function(){
+        return {
+          sql: "insert into deployments(message, deployedon, siteId) values($1, now(), $2) returning id, deployedon",
+          sqlArgs: [deploymentMessage, siteId],
+          cb: function(results, next){
+            var deployment = {
+              id: results.rows[0]["id"],
+              deployedOn: results.rows[0]["deployedon"],
+              message: deploymentMessage
+            }
+
+            next(deployment);
+          }
+        };
+      },
+      function(deployment){
+        return {
+          sql: "insert into deployedpages(data, deploymentid) select data, $1 from pages where siteid = $2",
+          sqlArgs: [deployment.id, siteId],
+          cb: function(results, next){
+            deployment.pages = results.rowCount;
+
+            next(deployment);
+          }
+        };
+      }
+    ]);
+  },
+  getDeployments: function(siteId){
+    var sql = "select message, deployedon, count(dp.id) as pages from deployments d join deployedpages dp on d.id = dp.deploymentid where siteid = $1 group by message, deployedon order by deployedon desc";
+
+    var sqlArgs = [siteId];
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
+      results.rows.forEach(function(row){
+        row.pages = Number(row.pages);
+        row.deployedOn = row.deployedon;
+        delete row.deployedon;
+      });
+
+      deferred.resolve(results.rows);
 
       done();
     });

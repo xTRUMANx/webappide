@@ -63,7 +63,6 @@ var Pages = React.createClass({
 
     return (
       <div>
-        <h1>Pages</h1>
         {this.state.err ? <p className="alert alert-danger">Failed to load data. Try refreshing. {this.state.err}</p> : null}
         <Link className="btn btn-primary" to="pageDesigner" params={{siteId: this.props.siteId}}>Create New Page</Link>
         <table className="table table-bordered table-condensed table-hover table-striped">

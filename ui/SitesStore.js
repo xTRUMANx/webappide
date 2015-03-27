@@ -20,7 +20,10 @@ var SitesStore = Reflux.createStore({
       loadingSites: this.loadingSites,
       loadingSitesFailed: this.loadingSiteFailed,
       loadedSite: this.loadedSite,
-      loadedSites: this.loadedSites
+      loadedSites: this.loadedSites,
+      loadedDeployments: this.loadedDeployments,
+      loadingDeployments: this.loadingDeployments,
+      loadingDeploymentsFailed: this.loadingDeploymentsFailed
     };
   },
   emit: function(){
@@ -48,26 +51,6 @@ var SitesStore = Reflux.createStore({
       this.emit();
     }.bind(this));
   },
-  onLoadSite: function(id){
-    this.loadingSite = true;
-    this.loadingSiteFailed = false;
-    this.emit();
-
-    Request({
-      url: "http://localhost:3000/api/sites",
-      qs: {id: id}
-    }, function(err, res, body){
-      var loadSucceeded = !err && res.statusCode === 200;
-
-      if(loadSucceeded){
-        this.loadedSite = JSON.parse(body);
-      }
-
-      this.loadSiteFailed = !loadSucceeded;
-      this.loadingSite = false;
-      this.emit();
-    }.bind(this));
-  },
   onLoadSites: function(){
     this.loadingSites = true;
     this.loadingSitesFailed = false;
@@ -90,6 +73,8 @@ var SitesStore = Reflux.createStore({
   onLoadSite: function(siteId){
     this.loadingSite = true;
     this.loadingSiteFailed = false;
+    this.loadingDeployments = true;
+    this.loadDeploymentsFailed = false;
     this.emit();
 
     Request({
@@ -104,6 +89,22 @@ var SitesStore = Reflux.createStore({
 
       this.loadingSiteFailed = !loadSucceeded;
       this.loadingSite = false;
+      this.emit();
+    }.bind(this));
+
+    Request({
+      url: "http://localhost:3000/api/sites/deployments",
+      qs: {id: siteId},
+      json: true
+    }, function(err, res, body){
+      var loadSucceeded = !err && res.statusCode === 200;
+
+      if(loadSucceeded){
+        this.loadedDeployments = body.deployments;
+      }
+
+      this.loadDeploymentsFailed = !loadSucceeded;
+      this.loadingDeployments = false;
       this.emit();
     }.bind(this));
   },
@@ -134,8 +135,35 @@ var SitesStore = Reflux.createStore({
 
       this.emit();
     }.bind(this));
+  },
+  onDeploySite: function(deploymentMessage, siteId){
+    this.deploying = true;
 
-    return 42;
+    this.emit();
+
+    Request({
+      url: "http://localhost:3000/api/sites/deploy",
+      method: "POST",
+      body: { deploymentMessage: deploymentMessage, siteId: siteId },
+      json: true
+    }, function(err, res, body){
+      if(err || res.statusCode !== 200){
+        this.err = err || res.statusCode;
+
+        SitesActions.deploySite.failed(this.err);
+      }
+      else{
+        this.loadedDeployments.unshift(body);
+
+        this.emit();
+
+        SitesActions.deploySite.completed();
+      }
+
+      this.deploying = false;
+
+      this.emit();
+    }.bind(this));
   }
 });
 

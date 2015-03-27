@@ -44,4 +44,31 @@ router.post("/", function(req, res, next){
     });
 });
 
+router.post("/deploy", function(req, res, next){
+  var deploymentMessage = req.body.deploymentMessage,
+    siteId = req.body.siteId;
+
+  DB.
+    deploySite(deploymentMessage, siteId).
+    then(function(deployment){
+      res.json(deployment);
+    }).
+    fail(function(err){
+      next(err);
+    });
+});
+
+router.get("/deployments", function(req, res, next){
+  var siteId = req.query.id;
+
+  DB.
+    getDeployments(siteId).
+    then(function(deployments){
+      res.json({deployments: deployments});
+    }).
+    fail(function(err){
+      next(err);
+    });
+});
+
 module.exports = router;

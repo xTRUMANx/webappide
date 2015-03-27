@@ -7,6 +7,7 @@ var AuthenticationStore = Reflux.createStore({
   init: function(){
     this.saveFailed = false;
     this.saving = false;
+    this.checkingSession = true;
   },
   getInitialState: function(){
     return this.emittedData();

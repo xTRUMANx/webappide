@@ -4,7 +4,8 @@ var SitesActions = {
   createSite: Reflux.createAction(),
   loadSites: Reflux.createAction(),
   loadSite: Reflux.createAction(),
-  deletePage: Reflux.createAction({ asyncResult: true })
+  deletePage: Reflux.createAction({ asyncResult: true }),
+  deploySite: Reflux.createAction({ asyncResult: true })
 }
 
 module.exports = SitesActions;
