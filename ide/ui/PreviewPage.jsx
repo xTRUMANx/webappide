@@ -1,10 +1,10 @@
 var React = require("react/addons"),
   ReactRouter = require("react-router"),
   Reflux = require("reflux"),
-  ElementsStore = require("./ElementsStore"),
-  ElementsActions = require("./ElementsActions"),
+  ElementsStore = require("webappide-core/ElementsStore"),
+  ElementsActions = require("webappide-core/ElementsActions"),
   ElementRenderer = require("./ElementRenderer"),
-  ProgressBar = require("./ProgressBar");
+  ProgressBar = require("webappide-core/ProgressBar");
 
 var PreviewPage = React.createClass({
   mixins: [Reflux.connect(ElementsStore), ReactRouter.State],
@@ -42,7 +42,8 @@ var PreviewPage = React.createClass({
       <div>
         <h2 className="text-center">Previewed Page: {this.state.elementsTree.properties.title}</h2>
         <hr />
-        <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} siteId={this.state.siteId} />
+        <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} siteId={this.state.siteId}
+        ide={true} />
       </div>
     );
   }

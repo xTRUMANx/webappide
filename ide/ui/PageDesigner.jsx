@@ -1,18 +1,18 @@
 var React = require("react/addons"),
   ReactRouter = require("react-router"),
   Reflux = require("reflux"),
-  ElementsStore = require("./ElementsStore"),
-  ElementsActions = require("./ElementsActions");
+  ElementsStore = require("webappide-core/ElementsStore"),
+  ElementsActions = require("webappide-core/ElementsActions");
 
-var elementsPropertiesSchema = require("./ElementsPropertiesSchema");
+var elementsPropertiesSchema = require("webappide-core/ElementsPropertiesSchema");
 
 var ElementsProperties = require("./ElementsProperties");
 
 var ElementsTree = require("./ElementsTree");
 
-var ElementRenderer = require("./ElementRenderer");
+var ElementRenderer = require("webappide-core/ElementRenderer");
 
-var ProgressBar = require("./ProgressBar");
+var ProgressBar = require("webappide-core/ProgressBar");
 
 var PageDesigner = React.createClass({
   mixins: [Reflux.connect(ElementsStore), ReactRouter.State],
@@ -72,7 +72,8 @@ var PageDesigner = React.createClass({
           <ElementsTree tree={this.state.elementsTree} selectedElement={this.state.selectedElement} showChildren={true} />
         </div>
         <div className="col-xs-8">
-          <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} pageBuilder={true} siteId={this.state.siteId} />
+          <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} pageBuilder={true} siteId={this.state.siteId}
+          ide={true} />
         </div>
       </div>
     );

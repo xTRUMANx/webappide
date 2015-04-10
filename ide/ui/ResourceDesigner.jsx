@@ -1,8 +1,8 @@
 var React = require("react"),
   ReactRouter = require("react-router"),
   Reflux = require("reflux"),
-  ResourcesActions = require("./ResourcesActions"),
-  ResourcesStore = require("./ResourcesStore");
+  ResourcesActions = require("webappide-core/ResourcesActions"),
+  ResourcesStore = require("webappide-core/ResourcesStore");
 
 var ResourceDesigner = React.createClass({
   mixins: [Reflux.connect(ResourcesStore), ReactRouter.State],

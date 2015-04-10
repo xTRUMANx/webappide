@@ -1,9 +1,9 @@
 var React = require("react"),
   Reflux = require("reflux"),
   ReactRouter = require("react-router"),
-  AuthenticationActions = require("./AuthenticationActions"),
-  AuthenticationStore = require("./AuthenticationStore"),
-  ProgressBar = require("./ProgressBar");
+  AuthenticationActions = require("webappide-core/AuthenticationActions"),
+  AuthenticationStore = require("webappide-core/AuthenticationStore"),
+  ProgressBar = require("webappide-core/ProgressBar");
 
 var LoginPage = React.createClass({
   mixins: [ReactRouter.Navigation, Reflux.connect(AuthenticationStore, "AuthenticationStoreState")],

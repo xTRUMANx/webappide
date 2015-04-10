@@ -1,7 +1,8 @@
 var Reflux = require("reflux"),
   Actions = require("./ElementsActions"),
   ElementsPropertiesSchema = require("./ElementsPropertiesSchema"),
-  Request = require("request");
+  Request = require("request"),
+  Utils = require("./Utils");
 
 var Store = Reflux.createStore({
   listenables: [Actions],
@@ -67,11 +68,11 @@ var Store = Reflux.createStore({
         var parsedResponse = JSON.parse(body);
 
         if(parsedResponse.layoutPage) {
-          this.layoutPage = setElementParent(parsedResponse.layoutPage);
+          this.layoutPage = Utils.setElementParent(parsedResponse.layoutPage);
         }
 
         var page = parsedResponse.page;
-        page = setElementParent(page);
+        page = Utils.setElementParent(page);
         this.page = page;
         this.selectedElement = page;
       }
@@ -93,7 +94,7 @@ var Store = Reflux.createStore({
 
       if(res.statusCode === 200){
         var layoutPages = JSON.parse(body);
-        layoutPages = setElementParent(layoutPages);
+        layoutPages = Utils.setElementParent(layoutPages);
         this.layoutPages = layoutPages.map(function(layoutPage){
           return {
             label: layoutPage.properties.title,
@@ -116,7 +117,7 @@ var Store = Reflux.createStore({
 
       if(res.statusCode === 200){
         var pages = JSON.parse(body);
-        pages = setElementParent(pages);
+        pages = Utils.setElementParent(pages);
         this.pages = pages.map(function(page){
           return {
             label: page.properties.title,
@@ -139,7 +140,7 @@ var Store = Reflux.createStore({
 
       if(res.statusCode === 200){
         var resources = JSON.parse(body);
-        resources = setElementParent(resources);
+        resources = Utils.setElementParent(resources);
         this.resources = resources;
         this.resourceOptions = resources.map(function(resource){
           return {
@@ -361,18 +362,6 @@ function resetChildIds(element, parentElement){
       resetChildIds(child, element);
     })
   }
-}
-
-function setElementParent(element){
-  if(element.children){
-    element.children.forEach(function(childElement){
-      childElement.parent = element;
-
-      setElementParent(childElement);
-    });
-  }
-
-  return element;
 }
 
 function findElementById(elementId, elementsTree){

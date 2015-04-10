@@ -2,9 +2,9 @@ var React = require("react"),
   Reflux = require("reflux"),
   ReactRouter = require("react-router"),
   Link = ReactRouter.Link,
-  SitesStore = require("./SitesStore"),
-  SitesActions = require("./SitesActions"),
-  ProgressBar = require("./ProgressBar");
+  SitesStore = require("webappide-core/SitesStore"),
+  SitesActions = require("webappide-core/SitesActions"),
+  ProgressBar = require("webappide-core/ProgressBar");
 
 var SitesListing = React.createClass({
   render: function(){

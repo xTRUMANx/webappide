@@ -1,7 +1,7 @@
 var React = require("react"),
   ReactRouter = require("react-router"),
-  AuthenticationActions = require("./AuthenticationActions"),
-  ProgressBar = require("./ProgressBar");
+  AuthenticationActions = require("webappide-core/AuthenticationActions"),
+  ProgressBar = require("webappide-core/ProgressBar");
 
 var LogoutPage = React.createClass({
   mixins: [ReactRouter.Navigation],

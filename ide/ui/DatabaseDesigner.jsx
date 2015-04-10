@@ -2,9 +2,9 @@ var React = require("react"),
   ReactRouter = require("react-router"),
   Link = ReactRouter.Link,
   Reflux = require("reflux"),
-  DatabaseStore = require("./DatabaseStore"),
-  DatabaseActions = require("./DatabaseActions"),
-  ProgressBar = require("./ProgressBar");
+  DatabaseStore = require("webappide-core/DatabaseStore"),
+  DatabaseActions = require("webappide-core/DatabaseActions"),
+  ProgressBar = require("webappide-core/ProgressBar");
 
 var DatabaseDesigner = React.createClass({
   mixins: [Reflux.connect(DatabaseStore)],

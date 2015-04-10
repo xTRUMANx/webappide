@@ -1,6 +1,6 @@
 var React = require("react/addons"),
   cx = React.addons.classSet,
-  ElementsActions = require("./ElementsActions"),
+  ElementsActions = require("webappide-core/ElementsActions"),
   MultiOptions = require("./MultiOptions");
 
 var ElementsProperties = React.createClass({

@@ -1,9 +1,9 @@
 var React = require("react"),
   Reflux = require("reflux"),
   ReactRouter = require("react-router"),
-  SitesActions = require("./SitesActions"),
-  SitesStore = require("./SitesStore"),
-  ProgressBar = require("./ProgressBar");
+  SitesActions = require("webappide-core/SitesActions"),
+  SitesStore = require("webappide-core/SitesStore"),
+  ProgressBar = require("webappide-core/ProgressBar");
 
 var CreateSite = React.createClass({
   mixins: [Reflux.connect(SitesStore), ReactRouter.Navigation],

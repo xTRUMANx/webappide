@@ -6,7 +6,7 @@ var React = require("react/addons"),
   Input = require("./Input"),
   DataRows = require("./DataRows");
 
-var ElementRenderer = React.createClass({
+var ElementRenderer = React.createClass({displayName: "ElementRenderer",
   mixins: [ReactRouter.Navigation],
   render: function(){
     var element = this.props.element;
@@ -18,21 +18,21 @@ var ElementRenderer = React.createClass({
     var childElements = element.children || [];
 
     var renderedChildren = childElements.map(function(childElement, index){
-      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} resourceOptions={this.props.resourceOptions} resourcePropertiesOptions={this.props.resourcePropertiesOptions} resources={this.props.resources} siteId={this.props.siteId} />;
+      return React.createElement(ElementRenderer, {element: childElement, pageBuilder: this.props.pageBuilder, key: index, content: this.props.content, resourceOptions: this.props.resourceOptions, resourcePropertiesOptions: this.props.resourcePropertiesOptions, resources: this.props.resources, siteId: this.props.siteId});
     }.bind(this));
 
     switch (element.type){
       case "page":
         renderedElement = (
-          <div>
-            {renderedChildren}
-          </div>
+          React.createElement("div", null, 
+            renderedChildren
+          )
         );
         break;
       case "content":
         if(this.props.pageBuilder){
           renderedElement = (
-            <h1>Content Goes Here</h1>
+            React.createElement("h1", null, "Content Goes Here")
           );
         }
         else{
@@ -51,10 +51,10 @@ var ElementRenderer = React.createClass({
       case "link":
         if(element.properties.type === "external"){
           renderedElement = (
-            <a href={url}>{renderedChildren}</a>
+            React.createElement("a", {href: url}, renderedChildren)
           );
         }
-        else{
+        else if(this.props.ide){
           var url = "";
 
           if(element.properties.page){
@@ -62,14 +62,21 @@ var ElementRenderer = React.createClass({
           }
 
           renderedElement = (
-            <Link to={url}>{renderedChildren}</Link>
+            React.createElement(Link, {to: url}, renderedChildren)
+          );
+        }
+        else{
+          var url = "/?pageId=" + element.properties.page
+
+          renderedElement = (
+            React.createElement(Link, {to: url}, renderedChildren)
           );
         }
 
         break;
       case "list":
         var list;
-
+        
         var listClass = cx({
           "nav navbar-nav": element.parent.type === "navbar",
           "navbar-right": element.parent.type === "navbar" && element.properties.rightOfNavbar
@@ -77,22 +84,22 @@ var ElementRenderer = React.createClass({
 
         var renderedListItems = renderedChildren.map(function(renderedChild, key){
           return (
-            <li key={key}>
-              {renderedChild}
-            </li>
+            React.createElement("li", {key: key}, 
+              renderedChild
+            )
           );
         });
 
         switch (element.properties.type){
           case "ordered":
             list = (
-              <ol>
-                {renderedListItems}
-              </ol>
+              React.createElement("ol", null, 
+                renderedListItems
+              )
             );
             break;
           default :
-            list = <ul className={listClass}>{renderedListItems}</ul>
+            list = React.createElement("ul", {className: listClass}, renderedListItems)
         }
         renderedElement = list;
         break;
@@ -117,9 +124,9 @@ var ElementRenderer = React.createClass({
           var colClasses = cx(classSet);
 
           return (
-            <div className={colClasses} key={key}>
-              {childElement}
-            </div>
+            React.createElement("div", {className: colClasses, key: key}, 
+              childElement
+            )
           );
         });
 
@@ -128,16 +135,16 @@ var ElementRenderer = React.createClass({
 
         for(var i = 0; i < Math.ceil(childrenCount/element.properties.columnsCount); i++){
           rows.push((
-            <div className="row" key={i}>
-              {actualRenderedChildren.splice(0, element.properties.columnsCount)}
-            </div>
+            React.createElement("div", {className: "row", key: i}, 
+              actualRenderedChildren.splice(0, element.properties.columnsCount)
+            )
           ));
         }
 
         renderedElement = (
-          <div>
-            {rows}
-          </div>
+          React.createElement("div", null, 
+            rows
+          )
         );
 
         break;
@@ -151,121 +158,121 @@ var ElementRenderer = React.createClass({
         switch (element.properties.type){
           case "free":
             renderedElement = (
-              <span className={textClass}>{element.properties.text}</span>
+              React.createElement("span", {className: textClass}, element.properties.text)
             );
             break;
           case "bold":
             renderedElement = (
-              <strong className={textClass} key={this.props.key}>{element.properties.text}</strong>
+              React.createElement("strong", {className: textClass, key: this.props.key}, element.properties.text)
             );
             break;
           case "italics":
             renderedElement = (
-              <em className={textClass} key={this.props.key}>{element.properties.text}</em>
+              React.createElement("em", {className: textClass, key: this.props.key}, element.properties.text)
             );
             break;
           case "paragraph":
           default:
             renderedElement = (
-              <p className={textClass} key={this.props.key}>{element.properties.text}</p>
+              React.createElement("p", {className: textClass, key: this.props.key}, element.properties.text)
             );
             break;
         }
         break;
       case "image":
         renderedElement = (
-          <img src={element.properties.url} width={element.properties.width} />
+          React.createElement("img", {src: element.properties.url, width: element.properties.width})
         );
         break;
       case "navbar":
         renderedElement = (
-          <nav className="navbar navbar-default">
-            <div className="container-fluid">
-              <div className="navbar-header">
-                <a className="navbar-brand" href="/">{element.properties.brand}</a>
-              </div>
-              {renderedChildren}
-            </div>
-          </nav>
+          React.createElement("nav", {className: "navbar navbar-default"}, 
+            React.createElement("div", {className: "container-fluid"}, 
+              React.createElement("div", {className: "navbar-header"}, 
+                React.createElement("a", {className: "navbar-brand", href: "/"}, element.properties.brand)
+              ), 
+              renderedChildren
+            )
+          )
         );
 
         break;
       case "jumbotron":
         renderedElement = (
-          <div className="jumbotron">
-            <div className="container">
-              {renderedChildren}
-            </div>
-          </div>
+          React.createElement("div", {className: "jumbotron"}, 
+            React.createElement("div", {className: "container"}, 
+              renderedChildren
+            )
+          )
         );
 
         break;
       case "form":
         renderedElement = (
-          <Form element={element} pageBuilder={this.props.pageBuilder}>
-            {renderedChildren}
-          </Form>
+          React.createElement(Form, {element: element, pageBuilder: this.props.pageBuilder}, 
+            renderedChildren
+          )
         );
 
         break;
       case "input":
         renderedElement = (
-          <Input element={element} resources={this.props.resources} />
+          React.createElement(Input, {element: element, resources: this.props.resources})
         );
         break;
       case "table":
         renderedElement = (
-          <table className="table table-bordered table-condensed table-hover table-striped">
-            <tbody>
-              {renderedChildren}
-            </tbody>
-          </table>
+          React.createElement("table", {className: "table table-bordered table-condensed table-hover table-striped"}, 
+            React.createElement("tbody", null, 
+              renderedChildren
+            )
+          )
         );
         break;
       case "dataTable":
         renderedElement = (
-          <table className="table table-condensed table-hover table-striped">
-            {renderedChildren}
-          </table>
+          React.createElement("table", {className: "table table-condensed table-hover table-striped"}, 
+            renderedChildren
+          )
         );
         break;
       case "tableRow":
         renderedElement = (
-          <tr>
-            {renderedChildren}
-          </tr>
+          React.createElement("tr", null, 
+            renderedChildren
+          )
         );
 
         break;
       case "dataRows":
-        renderedElement = <DataRows element={element} resources={this.props.resources} />
+        renderedElement = React.createElement(DataRows, {element: element, resources: this.props.resources})
         break;
       default :
         renderedElement = (
-          <h1>Unknown element: {element.type}</h1>
+          React.createElement("h1", null, "Unknown element: ", element.type)
         );
     }
 
     if(element.parent && element.parent.type === "tableRow"){
       if(element.parent.properties.isHeader || element.properties.isHeader){
         renderedElement = (
-          <th>
-            {renderedElement}
-          </th>
+          React.createElement("th", null, 
+            renderedElement
+          )
         );
       }
       else{
         renderedElement = (
-          <td>
-            {renderedElement}
-          </td>
+          React.createElement("td", null, 
+            renderedElement
+          )
         );
       }
     }
 
     if(element.properties.layout){
       return (
-        <ElementRenderer element={this.props.layoutPage} content={renderedElement} />
+        React.createElement(ElementRenderer, {element: this.props.layoutPage, content: renderedElement})
       );
     }
     else{

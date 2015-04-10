@@ -1,4 +1,15 @@
 module.exports = {
+  setElementParent: function(element){
+    if(element.children){
+      element.children.forEach(function(childElement){
+        childElement.parent = element;
+        
+        this.setElementParent(childElement);
+      }.bind(this));
+    }
+
+    return element;
+  },
   findAncestorByType: function(element, type)
   {
     if (element.type === type) {

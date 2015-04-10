@@ -1,6 +1,6 @@
 var React = require("react/addons"),
   cx = React.addons.classSet,
-  ElementsActions = require("./ElementsActions");
+  ElementsActions = require("webappide-core/ElementsActions");
 
 var ElementsTree = React.createClass({
   getInitialState: function(){

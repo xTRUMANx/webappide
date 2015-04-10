@@ -1,7 +1,7 @@
 var React = require("react"),
   ReactRouter = require("react-router"),
-  AuthenticationActions = require("./AuthenticationActions"),
-  AuthenticationStore = require("./AuthenticationStore");
+  AuthenticationActions = require("webappide-core/AuthenticationActions"),
+  AuthenticationStore = require("webappide-core/AuthenticationStore");
 
 var RegistrationPage = React.createClass({
   mixins: [ReactRouter.Navigation, Reflux.connect(AuthenticationStore)],

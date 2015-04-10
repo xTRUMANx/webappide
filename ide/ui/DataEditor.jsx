@@ -1,12 +1,12 @@
 var React = require("react"),
   ReactRouter = require("react-router"),
   Reflux = require("reflux"),
-  ResourcesActions = require("./ResourcesActions"),
-  ResourcesStore = require("./ResourcesStore"),
-  ResourceDataActions = require("./ResourceDataActions");
-  ResourceDataStore = require("./ResourceDataStore"),
-  ProgressBar = require("./ProgressBar"),
-  Utils = require("./Utils");
+  ResourcesActions = require("webappide-core/ResourcesActions"),
+  ResourcesStore = require("webappide-core/ResourcesStore"),
+  ResourceDataActions = require("webappide-core/ResourceDataActions");
+  ResourceDataStore = require("webappide-core/ResourceDataStore"),
+  ProgressBar = require("webappide-core/ProgressBar"),
+  Utils = require("webappide-core/Utils");
 
 var DataEditor = React.createClass({
   mixins: [Reflux.connect(ResourcesStore, "resourcesStoreState"), Reflux.connect(ResourceDataStore, "resourceDataStoreState"), ReactRouter.State],

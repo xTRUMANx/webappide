@@ -2,8 +2,8 @@ var React = require("react"),
   ReactRouter = require("react-router"),
   Link = ReactRouter.Link,
   Reflux = require("reflux"),
-  SitesActions = require("./SitesActions"),
-  ProgressBar = require("./ProgressBar");
+  SitesActions = require("webappide-core/SitesActions"),
+  ProgressBar = require("webappide-core/ProgressBar");
 
 var Pages = React.createClass({
   getInitialState: function(){

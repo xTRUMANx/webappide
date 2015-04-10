@@ -19,10 +19,10 @@ var HomePage = require("./HomePage"),
   LoginPage = require("./LoginPage");
   LogoutPage = require("./LogoutPage");
 
-var AuthenticationStore = require("./AuthenticationStore"),
-  AuthenticationActions = require("./AuthenticationActions");
+var AuthenticationStore = require("webappide-core/AuthenticationStore"),
+  AuthenticationActions = require("webappide-core/AuthenticationActions");
 
-var ProgressBar = require("./ProgressBar");
+var ProgressBar = require("webappide-core/ProgressBar");
 
 var App = React.createClass({
   mixins: [Reflux.connect(AuthenticationStore, "AuthenticationStoreState")],

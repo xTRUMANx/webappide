@@ -1,8 +1,8 @@
 var React = require("react"),
   Reflux = require("reflux"),
   ReactRouter = require("react-router"),
-  SitesActions = require("./SitesActions"),
-  SitesStore = require("./SitesStore"),
+  SitesActions = require("webappide-core/SitesActions"),
+  SitesStore = require("webappide-core/SitesStore"),
   Pages = require("./Pages");
 
 var ViewSite = React.createClass({
