@@ -9,8 +9,10 @@ var Express = require("express"),
 var router = Router();
 
 router.use(function(req, res, next){
-  req.session.userId = req.session.userId || req.session.id;
-
+  if(req.session){
+    req.session.userId = req.session.userId || req.session.id;
+  }
+  
   next();
 });
 

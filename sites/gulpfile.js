@@ -22,8 +22,16 @@ Gulp.task("jsx-transform", function(cb){
   });
 });
 
-Gulp.task("watch", ["jsx-transform"], function(){
-  Gulp.watch("./*.jsx", ["jsx-transform"]);
+Gulp.task("bundle", ["jsx-transform"], function(){
+  Gulp.src("./app.js").
+    pipe(GulpBrowserify()).
+    pipe(GulpRename("bundle.js")).
+    pipe(Gulp.dest("./public/js/")).
+    pipe(GulpNotify("Bundle Complete!"));
+});
+
+Gulp.task("watch", ["bundle"], function(){
+  Gulp.watch(["./*.jsx", "../core/*.jsx"], ["bundle"]);
 });
 
 Gulp.task("default", ["watch"]);

@@ -48,7 +48,7 @@ var Input = React.createClass({displayName: "Input",
         case "boolean":
           renderedInput = (
             React.createElement("div", {className: "form-group"}, 
-                React.createElement("div", {className: "checkbox"}, 
+                React.createElement("div", {className: "checkbox col-sm-offset-3"}, 
                   React.createElement("label", null, 
                     React.createElement("input", {type: "checkbox", defaultValue: resourceData[resourceProperty.name], onChange: this.updateResourceDataProperty.bind(this, resourceProperty.id, ancestorForm.id)}), 
                     resourceProperty.name
@@ -60,8 +60,8 @@ var Input = React.createClass({displayName: "Input",
         default :
           renderedInput = (
             React.createElement("div", {className: "form-group"}, 
-              React.createElement("label", {className: "control-label"}, resourceProperty.name), 
-              React.createElement("div", {className: ""}, 
+              React.createElement("label", {className: "control-label col-sm-3"}, resourceProperty.name), 
+              React.createElement("div", {className: "col-sm-9"}, 
                 React.createElement("input", {className: "form-control", type: resourceProperty.type, defaultValue: resourceData[resourceProperty.name], onChange: this.updateResourceDataProperty.bind(this, resourceProperty.id, ancestorForm.id)})
               )
             )

@@ -66,17 +66,17 @@ var ElementRenderer = React.createClass({displayName: "ElementRenderer",
           );
         }
         else{
-          var url = "/?pageId=" + element.properties.page
-
+          var url = this.makeHref("root", null, { pageId: element.properties.page });
+          
           renderedElement = (
-            React.createElement(Link, {to: url}, renderedChildren)
+            React.createElement(Link, {to: "root", query: {pageId: element.properties.page}}, renderedChildren)
           );
         }
 
         break;
       case "list":
         var list;
-        
+
         var listClass = cx({
           "nav navbar-nav": element.parent.type === "navbar",
           "navbar-right": element.parent.type === "navbar" && element.properties.rightOfNavbar

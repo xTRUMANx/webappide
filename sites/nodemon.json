@@ -1,0 +1,5 @@
+{
+  "delay": 1,
+  "ignore": [".git/*", ".idea/*", "bower_components/*", "node_modules/*", "public/*", "bower.json", "gulpfile.js", "package.json"],
+  "verbose": true
+}

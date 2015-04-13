@@ -23,7 +23,7 @@ var Form = React.createClass({
         {this.state.saveFailed ? <p className="alert alert-danger">Save Failed</p> : null}
         {this.state.saveSucceeded ? <p className="alert alert-success">Save Succeeded</p> : null}
         {this.props.children}
-        <input className="btn btn-primary" type="submit" disabled={this.state.saving} value="Save" />
+        <input className="btn btn-primary col-sm-offset-3" type="submit" disabled={this.state.saving} value="Save" />
       </form>
     );
   }

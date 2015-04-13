@@ -32,8 +32,30 @@ app.use(function(req, res){
           
           var layoutPage = result.layoutPage ?  Utils.setElementParent(result.layoutPage) : null;
 
-          ReactRouter.run(UI, "/", function(Handler){
+          ReactRouter.run(UI, req.url, function(Handler){
             var props = {elementsTree: page, layoutPage: layoutPage, resources: resources, siteId: siteId};
+
+            var serializedPage = JSON.parse(JSON.stringify(props.elementsTree, function(key, value){
+              if(key === "parent" && value){
+                return value.id;
+              }
+              else{
+                return value;
+              }
+            }));
+
+            var serializedLayoutPage = JSON.parse(JSON.stringify(props.layoutPage, function(key, value){
+              if(key === "parent" && value){
+                return value.id;
+              }
+              else{
+                return value;
+              }
+            }));
+
+            var serializedProps = JSON.stringify({elementsTree: serializedPage, layoutPage: serializedLayoutPage, resources: resources, siteId: siteId});
+
+            props.serializedProps = serializedProps;
 
             try
             {
