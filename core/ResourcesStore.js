@@ -1,6 +1,7 @@
 var Reflux = require("reflux"),
   ResourcesActions = require("./ResourcesActions"),
-  Request = require("request");
+  Request = require("request"),
+  Config = require("./config");
 
 var ResourcesStore = Reflux.createStore({
   listenables: [ResourcesActions],
@@ -38,7 +39,7 @@ var ResourcesStore = Reflux.createStore({
 
     this.emit();
 
-    Request("http://localhost:3000/api/resources?id=" + id, function(err, res, body){
+    Request(Config.apiUrls.resources + "?id=" + id, function(err, res, body){
       this.resource = JSON.parse(body);
 
       this.loading = false;
@@ -80,7 +81,7 @@ var ResourcesStore = Reflux.createStore({
     this.emit();
 
     Request({
-      url: "http://localhost:3000/api/resources",
+      url: Config.apiUrls.resources,
       method: "POST",
       headers: {
         "Content-type": "application/json"

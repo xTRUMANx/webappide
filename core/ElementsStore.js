@@ -2,7 +2,8 @@ var Reflux = require("reflux"),
   Actions = require("./ElementsActions"),
   ElementsPropertiesSchema = require("./ElementsPropertiesSchema"),
   Request = require("request"),
-  Utils = require("./Utils");
+  Utils = require("./Utils"),
+  Config = require("./config");
 
 var Store = Reflux.createStore({
   listenables: [Actions],
@@ -57,7 +58,7 @@ var Store = Reflux.createStore({
 
     this.emit();
 
-    Request("http://localhost:3000/api/pages?id=" + pageId, function(err, res, body){
+    Request(Config.apiUrls.pages + "?id=" + pageId, function(err, res, body){
       if(err){
         return console.log(err);
       }
@@ -87,7 +88,7 @@ var Store = Reflux.createStore({
     }.bind(this));
   },
   onLoadLayoutPages: function(){
-    Request("http://localhost:3000/api/pages?layoutsPagesOnly=true", function(err, res, body){
+    Request(Config.apiUrls.pages + "?layoutsPagesOnly=true", function(err, res, body){
       if(err){
         return console.log(err);
       }
@@ -110,7 +111,7 @@ var Store = Reflux.createStore({
     }.bind(this));
   },
   onLoadPages: function(){
-    Request("http://localhost:3000/api/pages", function(err, res, body){
+    Request(Config.apiUrls.pages, function(err, res, body){
       if(err){
         return console.log(err);
       }
@@ -133,7 +134,7 @@ var Store = Reflux.createStore({
     }.bind(this));
   },
   onLoadResources: function(){
-    Request("http://localhost:3000/api/resources", function(err, res, body){
+    Request(Config.apiUrls.resources, function(err, res, body){
       if(err){
         return console.log(err);
       }
@@ -167,7 +168,7 @@ var Store = Reflux.createStore({
     });
 
     Request({
-      url: "http://localhost:3000/api/pages",
+      url: Config.apiUrls.pages,
       method: "POST",
       headers: {
         "Content-type": "application/json"
@@ -359,7 +360,7 @@ var Store = Reflux.createStore({
 
     this.emit();
 
-    Request("http://localhost:3000/api/deployedPages?id=" + pageId, function(err, res, body){
+    Request(Config.apiUrls.deployedPages + "?id=" + pageId, function(err, res, body){
       if(err){
         return console.log(err);
       }
@@ -389,7 +390,7 @@ var Store = Reflux.createStore({
     }.bind(this));
   },
   onLoadDeployedLayoutPages: function(){
-    Request("http://localhost:3000/api/deployedPages?layoutsPagesOnly=true", function(err, res, body){
+    Request(Config.apiUrls.deployedPages + "?layoutsPagesOnly=true", function(err, res, body){
       if(err){
         return console.log(err);
       }

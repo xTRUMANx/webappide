@@ -1,6 +1,7 @@
 var Reflux = require("reflux"),
   DatabaseActions = require("./DatabaseActions"),
-  Request = require("request");
+  Request = require("request"),
+  Config = require("./config");
 
 var DatabaseStore = Reflux.createStore({
   listenables: [DatabaseActions],
@@ -25,7 +26,7 @@ var DatabaseStore = Reflux.createStore({
     this.err = false;
     this.emit();
 
-    Request("http://localhost:3000/api/resources", function(err, res, body){
+    Request(Config.apiUrls.resources, function(err, res, body){
       this.err = err || (res.statusCode !== 200 && res.statusCode);
 
       if(!this.err){

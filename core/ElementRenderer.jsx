@@ -18,7 +18,7 @@ var ElementRenderer = React.createClass({
     var childElements = element.children || [];
 
     var renderedChildren = childElements.map(function(childElement, index){
-      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} resourceOptions={this.props.resourceOptions} resourcePropertiesOptions={this.props.resourcePropertiesOptions} resources={this.props.resources} siteId={this.props.siteId} />;
+      return <ElementRenderer element={childElement} pageBuilder={this.props.pageBuilder} key={index} content={this.props.content} resourceOptions={this.props.resourceOptions} resourcePropertiesOptions={this.props.resourcePropertiesOptions} resources={this.props.resources} siteId={this.props.siteId} ide={this.props.ide} />;
     }.bind(this));
 
     switch (element.type){
@@ -67,7 +67,7 @@ var ElementRenderer = React.createClass({
         }
         else{
           var url = this.makeHref("root", null, { pageId: element.properties.page });
-          
+
           renderedElement = (
             <Link to="root" query={{pageId: element.properties.page}}>{renderedChildren}</Link>
           );

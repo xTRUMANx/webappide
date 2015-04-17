@@ -1,6 +1,7 @@
 var Reflux = require("reflux"),
   Request = require("request"),
-  AuthenticationActions = require("./AuthenticationActions");
+  AuthenticationActions = require("./AuthenticationActions"),
+  Config = require("./config");
 
 var AuthenticationStore = Reflux.createStore({
   listenables: [AuthenticationActions],
@@ -24,7 +25,7 @@ var AuthenticationStore = Reflux.createStore({
   },
   onRegister: function(email, password){
     Request({
-      url: "http://localhost:3000/api/authentication/register",
+      url: Config.apiUrls.registration,
       method: "POST",
       body: { email: email, password: password },
       json: true
@@ -47,7 +48,7 @@ var AuthenticationStore = Reflux.createStore({
     this.emit();
 
     Request({
-      url: "http://localhost:3000/api/authentication/login",
+      url: Config.apiUrls.login,
       method: "POST",
       body: credentials,
       json: true,
@@ -73,7 +74,7 @@ var AuthenticationStore = Reflux.createStore({
   },
   onLogout: function(){
     Request({
-      url: "http://localhost:3000/api/authentication/logout",
+      url: Config.apiUrls.logout,
     }, function(err, res, body){
       if(err || res.statusCode !== 200){
         AuthenticationActions.logout.failed(err || body || res.statusCode);
@@ -92,7 +93,7 @@ var AuthenticationStore = Reflux.createStore({
     this.emit();
 
     Request({
-      url: "http://localhost:3000/api/authentication/whoami",
+      url: Config.apiUrls.whoami,
       json: true,
     }, function(err, res, body){
       if(!err && res.statusCode === 200){

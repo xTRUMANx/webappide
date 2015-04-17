@@ -18,7 +18,7 @@ var ElementRenderer = React.createClass({displayName: "ElementRenderer",
     var childElements = element.children || [];
 
     var renderedChildren = childElements.map(function(childElement, index){
-      return React.createElement(ElementRenderer, {element: childElement, pageBuilder: this.props.pageBuilder, key: index, content: this.props.content, resourceOptions: this.props.resourceOptions, resourcePropertiesOptions: this.props.resourcePropertiesOptions, resources: this.props.resources, siteId: this.props.siteId});
+      return React.createElement(ElementRenderer, {element: childElement, pageBuilder: this.props.pageBuilder, key: index, content: this.props.content, resourceOptions: this.props.resourceOptions, resourcePropertiesOptions: this.props.resourcePropertiesOptions, resources: this.props.resources, siteId: this.props.siteId, ide: this.props.ide});
     }.bind(this));
 
     switch (element.type){
@@ -67,7 +67,7 @@ var ElementRenderer = React.createClass({displayName: "ElementRenderer",
         }
         else{
           var url = this.makeHref("root", null, { pageId: element.properties.page });
-          
+
           renderedElement = (
             React.createElement(Link, {to: "root", query: {pageId: element.properties.page}}, renderedChildren)
           );

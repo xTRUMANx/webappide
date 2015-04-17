@@ -3,7 +3,7 @@ var React = require("react/addons"),
   Reflux = require("reflux"),
   ElementsStore = require("webappide-core/ElementsStore"),
   ElementsActions = require("webappide-core/ElementsActions"),
-  ElementRenderer = require("./ElementRenderer"),
+  ElementRenderer = require("webappide-core/ElementRenderer"),
   ProgressBar = require("webappide-core/ProgressBar");
 
 var PreviewPage = React.createClass({
