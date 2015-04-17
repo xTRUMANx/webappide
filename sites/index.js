@@ -17,7 +17,7 @@ app.use(function(req, res){
   var siteId = Number(req.subdomains[1]);
 
   if(!siteId){
-    console.log("siteId not found", req.subdomains, req.path)
+    console.log("siteId not found", req.subdomains, req.hostname, req.path)
 
     return res.status(404).send("site not found");
   }
