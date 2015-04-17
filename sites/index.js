@@ -16,6 +16,12 @@ app.set("port", process.env.PORT || 3001);
 app.use(function(req, res){
   var siteId = Number(req.subdomains[1]);
 
+  if(!siteId){
+    console.log("siteId not found", req.subdomains, req.path)
+
+    return res.status(404).send("site not found");
+  }
+
   if(!req.query.pageId){
     return res.status(404).end();
   }
