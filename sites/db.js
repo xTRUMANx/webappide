@@ -94,7 +94,7 @@ function executeQueries(queries){
 }
 
 module.exports = {
-  getPages: function(){
+  getDeployedPages: function(){
     var deferred = Q.defer();
 
     PG.connect(Config.dbConnectionString, function (err, client, done) {
@@ -102,7 +102,7 @@ module.exports = {
         deferred.reject(err);
       }
 
-      var sql = "select id, data from pages order by id";
+      var sql = "select pageid, data from deployedpages order by pageid";
 
       client.query(sql, function(err, result){
         if(err){
@@ -111,7 +111,7 @@ module.exports = {
         else{
           var pages = result.rows.map(function(row){
             var page = row.data;
-            page.pageId = row.id;
+            page.pageId = row.pageid;
 
             return page;
           });
@@ -125,7 +125,7 @@ module.exports = {
 
     return deferred.promise;
   },
-  getLayoutPages: function(){
+  getDeployedLayoutPages: function(){
     var deferred = Q.defer();
 
     PG.connect(Config.dbConnectionString, function (err, client, done) {
@@ -133,7 +133,7 @@ module.exports = {
         deferred.reject(err);
       }
 
-      var sql = "select id, data from pages where data ? 'contentElement'";
+      var sql = "select pageid, data from deployedpages where data ? 'contentElement'";
 
       client.query(sql, function(err, result){
         if(err){
@@ -142,7 +142,7 @@ module.exports = {
         else{
           var pages = result.rows.map(function(row){
             var page = row.data;
-            page.pageId = row.id;
+            page.pageId = row.pageid;
 
             return page;
           });
@@ -156,7 +156,7 @@ module.exports = {
 
     return deferred.promise;
   },
-  getPage: function(id, siteId){
+  getDeployedPage: function(id, siteId){
     var deferred = Q.defer();
 
     PG.connect(Config.dbConnectionString, function (err, client, done) {
@@ -164,7 +164,7 @@ module.exports = {
         deferred.reject(err);
       }
 
-      var sql = "select id, data from pages where id = $1 and siteId = $2";
+      var sql = "select pageid, data from deployedpages where pageid = $1 and siteid = $2 and deploymentid = (select max(id) from deployments where siteid = $2)";
 
       client.query(sql, [id, siteId], function(err, results){
         if(err){
@@ -178,11 +178,16 @@ module.exports = {
           if(results.rowCount) {
             var row = results.rows[0];
             page = row.data;
-            page.pageId = row.id;
+            page.pageId = row.pageid;
+          }
+          else{
+            deferred.resolve({page: page});
+
+            return done();
           }
 
           if(page.properties.layout){
-            client.query("select id, data from pages where id = $1 and siteId = $2", [page.properties.layout, siteId], function(err2, results2){
+            client.query("select pageid, data from deployedpages where pageid = $1 and siteId = $2", [page.properties.layout, siteId], function(err2, results2){
               if(err2){
                 deferred.reject(err2);
 
@@ -194,7 +199,7 @@ module.exports = {
                 if(results2.rowCount) {
                   var row = results2.rows[0];
                   layoutPage = row.data;
-                  layoutPage.pageId = row.id;
+                  layoutPage.pageId = row.pageid;
                 }
 
                 deferred.resolve({page: page, layoutPage: layoutPage});

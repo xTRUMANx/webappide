@@ -84,7 +84,7 @@ var ViewSite = React.createClass({
               </div>
             </form>
             <h3>Deployments</h3>
-            {deployments ? deployments : <p>No deployments for this site is available.</p>}
+            {this.state.loadedDeployments && this.state.loadedDeployments.length ? deployments : <p>No deployments for this site is available.</p>}
           </div>
         </div>
       </div>

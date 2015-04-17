@@ -23,13 +23,17 @@ app.use(function(req, res){
   var pageId = Number(req.query.pageId);
 
   DB.
-    getPage(pageId, siteId).
+    getDeployedPage(pageId, siteId).
     then(function(result){
       DB.
         getResources().
         then(function(resources){
+          if(!result.page){
+            return res.status(404).send("page not found");
+          }
+
           var page = Utils.setElementParent(result.page);
-          
+
           var layoutPage = result.layoutPage ?  Utils.setElementParent(result.layoutPage) : null;
 
           ReactRouter.run(UI, req.url, function(Handler){

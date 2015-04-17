@@ -21,8 +21,8 @@ var App = React.createClass({displayName: "App",
 
     if(currentPageId !== this.state.elementsTree.pageId){
       this.setState({pageId: currentPageId});
-      ElementsActions.load(currentPageId);
-      ElementsActions.loadLayoutPages();
+      ElementsActions.loadDeployedPage(currentPageId);
+      ElementsActions.loadDeployedLayoutPages();
       ElementsActions.loadResources();
     }
   },

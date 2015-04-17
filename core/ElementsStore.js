@@ -351,6 +351,65 @@ var Store = Reflux.createStore({
         value: p.id
       }
     });
+  },
+  onLoadDeployedPage: function(pageId, siteId){
+    this.siteId = siteId;
+
+    this.loading = true;
+
+    this.emit();
+
+    Request("http://localhost:3000/api/deployedPages?id=" + pageId, function(err, res, body){
+      if(err){
+        return console.log(err);
+      }
+
+      if(res.statusCode === 200){
+        this.loaded = true;
+
+        var parsedResponse = JSON.parse(body);
+
+        if(parsedResponse.layoutPage) {
+          this.layoutPage = Utils.setElementParent(parsedResponse.layoutPage);
+        }
+
+        var page = parsedResponse.page;
+        page = Utils.setElementParent(page);
+        this.page = page;
+        this.selectedElement = page;
+      }
+      else{
+        this.err = err || res.statusCode;
+        this.loaded = false;
+      }
+
+      this.loading = false;
+
+      this.emit();
+    }.bind(this));
+  },
+  onLoadDeployedLayoutPages: function(){
+    Request("http://localhost:3000/api/deployedPages?layoutsPagesOnly=true", function(err, res, body){
+      if(err){
+        return console.log(err);
+      }
+
+      if(res.statusCode === 200){
+        var layoutPages = JSON.parse(body);
+        layoutPages = Utils.setElementParent(layoutPages);
+        this.layoutPages = layoutPages.map(function(layoutPage){
+          return {
+            label: layoutPage.properties.title,
+            value: layoutPage.pageId
+          };
+        });
+      }
+      else{
+        this.err = err || res.statusCode;
+      }
+
+      this.emit();
+    }.bind(this));
   }
 });
 

@@ -550,7 +550,7 @@ module.exports = {
       },
       function(deployment){
         return {
-          sql: "insert into deployedpages(data, deploymentid) select data, $1 from pages where siteid = $2",
+          sql: "insert into deployedpages(pageid, data, deploymentid, siteid) select id, data, $1, siteid from pages where siteid = $2",
           sqlArgs: [deployment.id, siteId],
           cb: function(results, next){
             deployment.pages = results.rowCount;
@@ -562,7 +562,7 @@ module.exports = {
     ]);
   },
   getDeployments: function(siteId){
-    var sql = "select message, deployedon, count(dp.id) as pages from deployments d join deployedpages dp on d.id = dp.deploymentid where siteid = $1 group by message, deployedon order by deployedon desc";
+    var sql = "select message, deployedon, count(dp.id) as pages from deployments d join deployedpages dp on d.id = dp.deploymentid where d.siteid = $1 group by message, deployedon order by deployedon desc";
 
     var sqlArgs = [siteId];
 
@@ -577,5 +577,94 @@ module.exports = {
 
       done();
     });
+  },
+  getDeployedLayoutPages: function(){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function (err, client, done) {
+      if(err){
+        deferred.reject(err);
+      }
+
+      var sql = "select pageid, data from deployedpages where data ? 'contentElement'";
+
+      client.query(sql, function(err, result){
+        if(err){
+          deferred.reject(err);
+        }
+        else{
+          var pages = result.rows.map(function(row){
+            var page = row.data;
+            page.pageId = row.pageid;
+
+            return page;
+          });
+
+          deferred.resolve(pages);
+        }
+
+        done();
+      });
+    });
+
+    return deferred.promise;
+  },
+  getDeployedPage: function(id){
+    var deferred = Q.defer();
+
+    PG.connect(Config.dbConnectionString, function (err, client, done) {
+      if(err){
+        deferred.reject(err);
+      }
+
+      var sql = "select pageid, data from deployedpages where pageid = $1";
+
+      client.query(sql, [id], function(err, results){
+        if(err){
+          deferred.reject(err);
+
+          done();
+        }
+        else{
+          var page;
+
+          if(results.rowCount) {
+            var row = results.rows[0];
+            page = row.data;
+            page.pageId = row.pageid;
+          }
+
+          if(page.properties.layout){
+            client.query("select pageid, data from deployedpages where pageid = $1", [page.properties.layout], function(err2, results2){
+              if(err2){
+                deferred.reject(err2);
+
+                done();
+              }
+              else{
+                var layoutPage;
+
+                if(results2.rowCount) {
+                  var row = results2.rows[0];
+                  layoutPage = row.data;
+                  layoutPage.pageId = row.pageid;
+                }
+
+                deferred.resolve({page: page, layoutPage: layoutPage});
+
+                done();
+              }
+            });
+          }
+          else{
+            deferred.resolve({page: page});
+
+            done();
+          }
+        }
+      });
+    });
+
+    return deferred.promise;
   }
 };
