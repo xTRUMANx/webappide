@@ -2,7 +2,8 @@ var Gulp = require("gulp"),
   GulpReact = require("gulp-react"),
   GulpRename = require("gulp-rename"),
   GulpBrowserify = require("gulp-browserify"),
-  GulpNotify = require("gulp-notify")
+  GulpNotify = require("gulp-notify"),
+  GulpUglify = require("gulp-uglify");
 
 Gulp.task("jsx-transform", function(cb){
   var stream = Gulp.src("./*.jsx").
@@ -27,6 +28,13 @@ Gulp.task("bundle", ["jsx-transform"], function(){
     pipe(GulpBrowserify()).
     pipe(GulpRename("bundle.js")).
     pipe(Gulp.dest("./public/js/")).
+    pipe(GulpUglify()).
+    on("error", function(err){
+      console.log(err);
+      this.end();
+    }).
+    pipe(GulpRename("bundle.min.js")).
+    pipe(Gulp.dest("./public/js")).
     pipe(GulpNotify("Bundle Complete!"));
 });
 

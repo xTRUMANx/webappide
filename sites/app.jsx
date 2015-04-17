@@ -35,7 +35,7 @@ var App = React.createClass({
         </head>
         <body>
           <ElementRenderer element={this.state.elementsTree} layoutPage={this.state.layoutPage} resources={this.state.resources} siteId={this.state.siteId} />
-          <script src="/js/bundle.js" />
+          <script src="/js/bundle.min.js" />
           <script id="props" type="text" dangerouslySetInnerHTML={{__html: this.props.serializedProps}} />
         </body>
       </html>

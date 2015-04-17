@@ -35,7 +35,7 @@ var App = React.createClass({displayName: "App",
         ), 
         React.createElement("body", null, 
           React.createElement(ElementRenderer, {element: this.state.elementsTree, layoutPage: this.state.layoutPage, resources: this.state.resources, siteId: this.state.siteId}), 
-          React.createElement("script", {src: "/js/bundle.js"}), 
+          React.createElement("script", {src: "/js/bundle.min.js"}), 
           React.createElement("script", {id: "props", type: "text", dangerouslySetInnerHTML: {__html: this.props.serializedProps}})
         )
       )
