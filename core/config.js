@@ -8,7 +8,10 @@ var apiUrls = {
   resources: apiRootUrl + "resources",
   pages: apiRootUrl + "pages",
   deployedPages: apiRootUrl + "deployedPages",
-  resourceData: apiRootUrl + "resourceData"
+  resourceData: apiRootUrl + "resourceData",
+  sites: apiRootUrl + "sites"
+  deployments: apiRootUrl + "sites/deployments"
+  deploy: apiRootUrl + "sites/deploy"
 };
 
 module.exports = {

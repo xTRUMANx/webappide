@@ -1,6 +1,7 @@
 var Reflux = require("reflux"),
   Request = require("request"),
-  SitesActions = require("./SitesActions");
+  SitesActions = require("./SitesActions"),
+  Config = require("./config");
 
 var SitesStore = Reflux.createStore({
   listenables: [SitesActions],
@@ -35,7 +36,7 @@ var SitesStore = Reflux.createStore({
     this.emit();
 
     Request({
-      url: "http://localhost:3000/api/sites",
+      url: Config.apiUrls.sites,
       method: "POST",
       json: true,
       body: site
@@ -57,7 +58,7 @@ var SitesStore = Reflux.createStore({
     this.emit();
 
     Request({
-      url: "http://localhost:3000/api/sites",
+      url: Config.apiUrls.sites,
     }, function(err, res, body){
       var loadSucceeded = !err && res.statusCode === 200;
 
@@ -78,7 +79,7 @@ var SitesStore = Reflux.createStore({
     this.emit();
 
     Request({
-      url: "http://localhost:3000/api/sites",
+      url: Config.apiUrls.sites,
       qs: {id: siteId}
     }, function(err, res, body){
       var loadSucceeded = !err && res.statusCode === 200;
@@ -93,7 +94,7 @@ var SitesStore = Reflux.createStore({
     }.bind(this));
 
     Request({
-      url: "http://localhost:3000/api/sites/deployments",
+      url: Config.apiUrls.deployments,
       qs: {id: siteId},
       json: true
     }, function(err, res, body){
@@ -113,7 +114,7 @@ var SitesStore = Reflux.createStore({
 
     this.emit();
 
-    Request("http://localhost:3000/api/pages", {method: "delete", qs: {id: pageId}}, function(err, res, body){
+    Request(Config.apiUrls.pages, {method: "delete", qs: {id: pageId}}, function(err, res, body){
       if(err){
         return console.log(err);
       }
@@ -142,7 +143,7 @@ var SitesStore = Reflux.createStore({
     this.emit();
 
     Request({
-      url: "http://localhost:3000/api/sites/deploy",
+      url: Config.apiUrls.deploy,
       method: "POST",
       body: { deploymentMessage: deploymentMessage, siteId: siteId },
       json: true
