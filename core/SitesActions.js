@@ -5,6 +5,7 @@ var SitesActions = {
   loadSites: Reflux.createAction(),
   loadSite: Reflux.createAction(),
   deletePage: Reflux.createAction({ asyncResult: true }),
+  setAsHomePage: Reflux.createAction({ asyncResult: true }),
   deploySite: Reflux.createAction({ asyncResult: true })
 }
 

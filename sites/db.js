@@ -362,5 +362,22 @@ module.exports = {
 
       done();
     });
+  },
+  getHomePageId: function(siteId){
+    var sql = "select pageid from deployedpages where siteid = $1 and homepage = TRUE and deploymentid = (select max(id) from deployments where siteid = $1)";
+
+    var sqlArgs = [siteId];
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
+      var pageId;
+      console.log(results.rowCount, results.rows)
+      if(results.rowCount){
+        pageId = results.rows[0]["pageid"];
+      }
+
+      deferred.resolve(pageId);
+
+      done();
+    });
   }
 };

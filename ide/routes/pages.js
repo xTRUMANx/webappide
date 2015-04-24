@@ -64,4 +64,15 @@ router.delete("/", function(req, res, next){
     });
 });
 
+router.put("/homePage", function(req, res, next){
+  DB.
+    setAsHomePage(req.query.id).
+    then(function(){
+      res.end();
+    }).
+    fail(function(err){
+      next(err);
+    });
+});
+
 module.exports = router;

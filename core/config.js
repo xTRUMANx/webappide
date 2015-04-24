@@ -11,7 +11,8 @@ var apiUrls = {
   resourceData: apiRootUrl + "resourceData",
   sites: apiRootUrl + "sites",
   deployments: apiRootUrl + "sites/deployments",
-  deploy: apiRootUrl + "sites/deploy"
+  deploy: apiRootUrl + "sites/deploy",
+  setAsHomePage: apiRootUrl + "pages/homePage"
 };
 
 module.exports = {

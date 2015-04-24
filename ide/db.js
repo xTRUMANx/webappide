@@ -455,7 +455,7 @@ module.exports = {
     });
   },
   getSite: function(id){
-    var sql = "select s.id, s.data, array_agg(row_to_json(row(p.id, p.data, p.siteId)::pages) order by p.id) filter (where p.id is not null) as sitePages from sites s left join pages p on s.id = p.siteId where s.id = $1 group by s.id, s.data;";
+    var sql = "select s.id, s.data, array_agg(row_to_json(row(p.id, p.data, p.siteId, p.homepage)::pages) order by p.id) filter (where p.id is not null) as sitePages from sites s left join pages p on s.id = p.siteId where s.id = $1 group by s.id, s.data;";
 
     var sqlArgs = [id];
 
@@ -550,7 +550,7 @@ module.exports = {
       },
       function(deployment){
         return {
-          sql: "insert into deployedpages(pageid, data, deploymentid, siteid) select id, data, $1, siteid from pages where siteid = $2",
+          sql: "insert into deployedpages(pageid, data, deploymentid, siteid, homepage) select id, data, $1, siteid, homepage from pages where siteid = $2",
           sqlArgs: [deployment.id, siteId],
           cb: function(results, next){
             deployment.pages = results.rowCount;
@@ -666,5 +666,16 @@ module.exports = {
     });
 
     return deferred.promise;
+  },
+  setAsHomePage: function(id){
+    var sql = "update pages set homepage = (id = $1) where siteid = (select siteid from pages where id = $1)";
+
+    var sqlArgs = [id];
+
+    return executeQuery(sql, sqlArgs, function(results, done, deferred){
+      deferred.resolve();
+
+      done();
+    });
   }
 };

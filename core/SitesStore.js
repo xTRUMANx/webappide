@@ -112,8 +112,6 @@ var SitesStore = Reflux.createStore({
   onDeletePage: function(page){
     var pageId = page.id;
 
-    this.emit();
-
     Request(Config.apiUrls.pages, {method: "delete", qs: {id: pageId}}, function(err, res, body){
       if(err){
         return console.log(err);
@@ -132,6 +130,32 @@ var SitesStore = Reflux.createStore({
         this.err = err || res.statusCode;
 
         SitesActions.deletePage.failed(this.err);
+      }
+
+      this.emit();
+    }.bind(this));
+  },
+  onSetAsHomePage: function(page){
+    var pageId = page.id;
+
+    Request(Config.apiUrls.setAsHomePage, {method: "put", qs: {id: pageId, homePage: true}}, function(err, res, body){
+      if(err){
+        return console.log(err);
+      }
+
+      if(res.statusCode === 200){
+        this.loadedSite.pages.forEach(function(p){
+          p.homePage = p.id === pageId;
+        });
+
+        this.emit();
+
+        SitesActions.setAsHomePage.completed();
+      }
+      else{
+        this.err = err || res.statusCode;
+
+        SitesActions.setAsHomePage.failed(this.err);
       }
 
       this.emit();
