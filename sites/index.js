@@ -1,4 +1,5 @@
 var Express = require("express"),
+  morgan = require("morgan"),
   path = require("path"),
   React = require("react"),
   ReactRouter = require("react-router"),
@@ -11,6 +12,8 @@ var Express = require("express"),
 var app = Express();
 
 app.use(Express.static(path.join(__dirname, "public")));
+
+app.use(morgan("dev"));
 
 app.set("port", process.env.PORT || 3001);
 
